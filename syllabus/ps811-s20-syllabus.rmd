@@ -1,0 +1,400 @@
+---
+title: "PS 811: Introduction to Statistical Computing"
+author: "Instructor: Michael DeCrescenzo"
+date: "Spring 2020"
+# term: "Spring 2020"
+# updated: "`r format(Sys.time(), '%B %d, %Y')`"
+
+instructor: Michael DeCrescenzo
+email: "decrescenzo@wisc.edu"
+officehours: "W 3pm--5pm (or by appt)"
+office: "Colectivo (State St.)"
+
+credits: 1 (pass/fail)
+lecture: "F 8am--9am, 3218 Social Sciences (SSCC Lab)"
+web: |
+  | \href{https://mikedecr.github.io/teaching/computing-811/}{\texttt{mikedecr.github.io/teaching}}
+
+# fonts:
+#   - package: MinionPro
+#     options: lf, mathtabular, minionint
+#   - package: FiraSans
+#     options: scaled = 0.9
+#   - package: zi4
+#     options: varqu, scaled = 0.95
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+    # template: mgd-syllabus-template.tex
+geometry: margin=1in
+compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes: |
+  ```{=latex}
+    \usepackage[lf, mathtabular, minionint]{MinionPro} 
+    \usepackage[scaled = 0.9]{FiraSans} 
+    \usepackage[varqu, scaled = 0.95]{zi4} 
+    \usepackage{titling} 
+      \pretitle{\begin{center} \LARGE} 
+      \posttitle{\par\end{center}\vskip 12pt} 
+    \usepackage[small, bf]{titlesec} 
+      \titleformat*{\subsection}{\bfseries \itshape}
+      \titleformat*{\paragraph}{\bfseries \itshape}
+      \titlespacing\section{0pt}{1.5\parskip}{0.5\parskip}
+      \titlespacing\subsection{0pt}{1.5\parskip}{0.5\parskip}
+  ```
+---
+
+```{=latex}
+\begin{tabular*}{\textwidth}{ @{\extracolsep{\fill}} ll @{\extracolsep{\fill}}}
+
+  \textbf{Credits}: 1 (pass/fail) &
+    \textbf{E-mail}: \href{mailto:decrescenzo@wisc.edu}{\tt decrescenzo@wisc.edu} \\
+
+  \textbf{Lecture}: Fri.\ 8--9 a.m., 3218 Social Sciences &
+    \textbf{Office Hours}: Weds.\ 3--5 p.m.\ \\
+
+  \textbf{Website}: \href{https://mikedecr.github.io/teaching/computing-811/}{\texttt{mikedecr.github.io/teaching/computing-811}} &
+    \textbf{Office}: Colectivo (State St.)\footnotemark\\
+\end{tabular*}
+\footnotetext{I have chronic back pain that makes it difficult for me to hold office hours in North Hall. Look for me at either the upstairs or downstairs standing bars.} 
+```
+
+# About This Course
+
+Every (?) contemporary social science research project happens on a computer. We have to manage data (spreadsheets, interviews, primary sources), conduct analysis (not all of it statistical), maintain documentation about the project, organize literature reviews, create bibliographies, and write the dang paper. All of these tasks are easier with a principled understanding of _computational tools_ and _reproducible workflow_. 
+
+Political Science 811 is an introduction to computational/programming techniques for political and social sciences. Much of the course is geared toward quantitative research (data science work in R), but many of the topics, tools, and skills we cover are transferable to qualitative and theoretical research as well (project workflow, reproducibility, technical document preparation, Git...). I want to emphasize that these skills are valuable for technical/research-focused careers _outside of academia_ as well.
+
+The goal of the course is to build computational skills that they don't teach you in other methods courses. A statistics course may discuss a particular model, but it may not teach you how to prepare your data or manage the model's output. A qualitative methods course may discuss a process tracing methodology, but it may not give you tools for diagramming the process with a computer graphic. Our goal is to be prepared to tackle not just our coursework but also _real projects_ and all of their idiosyncratic problems.
+
+## Learning Outcomes
+
+More specifically, the course will focus on the following skills and goals.
+
+1. Manage a self-contained, reproducible research project.
+2. Prepare, model, and visualize data using the statistical programming language **`R`**.
+3. Create a dynamic research paper using **R Markdown**.
+4. Track changes to plain-text source files with **Git**.
+
+
+## Class Setup and Bureaucratic Details
+
+This is a $1$-credit course graded on a pass/fail basis. The instructional mode is all face-to-face and follows the "Traditional/Carnegie" credit model.^[
+  At least two hours of outside work for every one hour spent in class, per the university's credit policy: <https://teachlearn.provost.wisc.edu/course-syllabi/>
+]
+
+Our course reserves the classroom for _two hours every Friday_ (8--10 a.m.). Since this is a $1$-unit course, we will hold one hour of "required" instruction time (8--9 a.m.) and one hour of optional/open practice time (9--10 a.m.) for working on take-home exercises in a structured environment with nearby help. It takes practice to learn a programming skill, so I encourage you to take the second hour of practice time seriously.
+
+The required in-class time will be a mixture lecture, code demos, and code practice. If a lesson has slides, they may contain some code examples, but they will not contain every piece of important information. Expect me to circulate scripts and other notes through Canvas.
+
+
+
+## Software
+
+We will use a few important software tools in this course:
+
+- **R**, a statistical programming language. If you haven't already, install it at <https://cloud.r-project.org/>. Unlike many statistical tools of generations past, R is actually cool. And free.
+- **Rstudio**, an app that provides a development environment for powerful and efficient R programming. If you haven't already, download the free *desktop version* at <https://www.rstudio.com/products/rstudio/download/>. Be sure to install it *fully*.^[
+  This is a warning for (at least?) Mac users. When you download Rstudio, you get a folder containing an executable app. Do _not_ simply run the app from within the folder that you download. Instead, copy (drag) the Rstudio app all the way into your applications folder. 
+]
+- **Git**, a version control system. Version control is like "track changes" for code; it shows you a record of changes to a file, which facilitates iterative project development and collaboration. It may already be installed on your computer. To find out, follow the installation instructions for your operating system at <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>. **I do not recommend installing from source.**
+
+We will learn R with a focus on the "Tidyverse" packages rather than built-in R ("base R"). This is an intentional pedagogical choice. The Tidyverse approach contains tools that are simultaneously powerful, flexible, and easy to use. It is a style of R programming that you are _likely to use in the future_---more likely than an all-base style, I would bet. Given that we don't have much time together, I propose we cut straight to the fun stuff.
+
+
+## Readings and Other Materials {#sec:reading}
+
+Here are some free texts for the tools/skills we learn in this class, most (all?) of them open-source. The course schedule below contains links to additional resources.
+
+R/Tidyverse:
+
+- [R for Data Science](https://r4ds.had.co.nz/), Grolemund and Wickham (hereafter "R4DS")
+- [Statistical Inference via Data Science: A ModernDive into R and the tidyverse](https://moderndive.com/), Ismay and Kim (hereafter "Modern Dive")
+
+R Graphics (`ggplot2`):
+
+- [ggplot2: Elegant Graphics for Data Analysis, 3rd ed.](https://ggplot2-book.org/), Wickham (2nd ed. on Canvas)
+- [Data Visualization: A practical introduction](http://socviz.co/), Healy
+- [ggplot Flipbook](https://github.com/EvaMaeRey/ggplot_flipbook), Reynolds
+
+
+R Markdown:
+
+- [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/), Xie, Allaire, and Grolemund
+- [bookdown: Authoring Books and Technical Documents with R Markdown](https://bookdown.org/yihui/bookdown/), Xie
+
+Git:
+
+- [Happy Git and GitHub for the useR](https://happygitwithr.com/), Bryan, "the STAT 545 TAs," and Hester
+
+Bonus:
+
+- [Notes from Spring 2018](https://mikedecr.github.io/courses/811/), DeCrescenzo (not as thorough)
+- [Notes from Spring 2019](https://judgelord.github.io/PS811/), Judge-Lord
+- [What They Forgot to Teach You About R](https://rstats.wtf/), Bryan and Hester (hereafter "WTF-R")
+- [Advanced R](https://adv-r.hadley.nz/), Wickham
+- [Advanced Data Analysis from an Elementary Point of View](http://www.stat.cmu.edu/~cshalizi/ADAfaEPoV/), Shalizi
+- Learn R on Twitter:
+[R-Ladies](https://twitter.com/WeAreRLadies),
+[Mara Averick](https://twitter.com/dataandme), 
+[Thomas Mock](https://twitter.com/thomas_mock),
+[Jenny Bryan](https://twitter.com/JennyBryan),
+[Hadley Wickham](https://twitter.com/hadleywickham),
+[Gina Reynolds](https://twitter.com/EvaMaeRey),
+[Julia Silge](https://twitter.com/juliasilge), 
+[Kara Woo](https://twitter.com/kara_woo),
+[Emily Reiderer](https://twitter.com/EmilyRiederer),
+[Alison Hill](https://twitter.com/apreshill),
+[Emi Tanaka](https://twitter.com/statsgen),
+[Andrew Heiss](https://twitter.com/andrewheiss),
+and
+[Michael Kearney](https://twitter.com/kearneymw).
+
+<!-- 
+- Reproducible Research with R and RStudio Second Edition 
+- Gelman Hill.pdf
+- James, Witten, Hastie, and Tibshirani Introduction to Statistical Learning in R.pdf
+- statistical rethinking
+- jackman
+- 
+-->
+
+## Seeking Help
+
+Computer programming can be frustrating because computers are stupid, and error messages are not always helpful. Fortunately, help is out there. 
+
+Take the optional "Hour 2" of class seriously. It is set aside for your benefit. It provides an opportunity to practice programming concepts (1) as they are freshly introduced in class and (2) while I am around to help with problems.
+
+Outside of class time, I can provide help in office hours and (sparingly) by email, but try to refrain from reaching out *until you have exhausted other sources of help* such as [StackOverflow](https://stackoverflow.com/) or [RStudio Community](https://community.rstudio.com/).^[
+  Tip: Google "rstats" instead of just "r"
+]
+Why? Because finding solutions using documentation and online resources is an essential skill for learning any programming language. You will learn these tools (especially R) better by learning to help yourself! Note that the course material is designed to be self-contained enough that everything you need to complete take-home assignments should be included in course notes, texts listed above, and the resources provided as we go. Obviously, problems that are specific to your individual project needs may require solutions from beyond the course material.
+
+
+# Deliverables {#sec:deliverables}
+
+In past years, teaching evaluations for this course suggested that students wished they could be held more accountable for practicing these skills on an ongoing basis. As such, we will have some assignments throughout the semester. They will be of three types.
+
+1. Short (short!) almost-weekly assignments for routinizing basic software skills. These will be focused mainly on data tasks in R.
+2. A "midterm" assignment: an R Markdown document that combines R code and writing to talk through a short data analysis process. This assignment is designed to combine data science and workflow practices.
+3. Final project: an open-source, reproducible research project that integrates data analysis, writing, and version control. This does not need to be an original project that you devise _only for this class_---instead, I recommend that you "double up" this project with a paper that you already have to write for another course (such as PS 813). The difference is that I will grade the computational work that happens in the background of the project (code, project organization, etc.) rather than the scholarly work in the paper itself.^[
+  Please consult me if you have questions or concerns about your project idea. I am flexible and happy to accommodate project ideas for students who are not enrolled in PS 813 and/or who have other project formats that could be amenable to this assignment.
+]
+The project should culminate in a self-contained, reproducible project repository that features an R Markdown paper, uses code for its analysis, graphics, bibliography, etc., is version-controlled with Git, and is pushed to Github.^[
+  Or some other remote repository service like GitLab or BitBucket.
+]
+
+I will provide more information about assignments as the semester progresses.
+
+## Grading and Assignment Policies
+
+Collaboration: I encourage _good-natured_ collaboration and consultation with your classmates, but you must turn in your own work. Plagiarism is surprisingly easy to spot---I have spotted it in the past---and will not be tolerated (see ["Academic Integrity"](#sec:academic-intergrity) below). Assignment sheets may contain additional guidance on acceptable forms of collaboration, and I am *more than happy* to answer your questions on acceptable forms of collaboration. The final project, however, should be done on your own.
+
+Attendance: Your attendance is your own responsibility, but skipping class will harm your understanding of essential concepts. This class exists because it is challenging to learn these skills without guidance. If difficult life circumstances are regularly affecting your ability to attend class, please speak with me ASAP so we can create accommodations. For one-off absences, consult your classmates for notes.
+
+Grading and late work: Please submit assignments (except the final project) on Canvas by 8 a.m. on their due dates, which will be Fridays. My hope is to keep these assignments short in order to minimize late work and get solutions to you ASAP. I will keep track of assignment performance using a check/plus/minus/zero system. 
+
+## Academic Integrity {#sec:academic-intergrity}
+
+I encourage collaboration but take academic integrity and honesty very seriously. If you cheat, fabricate, plagiarize, collaborate outside acceptable limits, or help others commit these acts, you can face disciplinary action including but not limited to failing an assignment, failing the course, or facing more serious disciplinary action dispensed by higher university authorities. Substantial or repeated cases of misconduct will be referred to the Office of Student Conduct & Community Standards for additional review. For more, see <https://conduct.students.wisc.edu/academic-integrity/>. I am happy to answer questions about collaboration, citation practices, and more!
+
+
+# Other policies
+
+## Diversity and Inclusion
+
+Diversity is a source of strength, creativity, and innovation for UW-Madison. We value the contributions of each person and respect the profound ways their identity, culture, background, experience, status, abilities, and opinion enrich the university community. We commit ourselves to the pursuit of excellence in teaching, research, outreach, and diversity as inextricably linked goals. The University of Wisconsin-Madison fulfills its public mission by creating a welcoming and inclusive community for people from every background---people who as students, faculty, and staff serve Wisconsin and the world. Visit <https://diversity.wisc.edu/> for more.
+
+
+## Accommodations
+
+The University of Wisconsin--Madison supports the right of all enrolled students to a full and equal educational opportunity.
+
+Religious observance will _always_ be a valid reason to request accommodations from me.
+
+The Americans with Disabilities Act (ADA), Wisconsin State Statute (36.12), and UW-Madison policy (Faculty Document 1071) require that students with disabilities be reasonably accommodated in instruction and campus life. Reasonable accommodations for students with disabilities is a shared instructor and student responsibility. Students are expected to inform instructors of their need for instructional accommodations by the end of the third week of the semester, or as soon as possible after a disability has been incurred or recognized. Instructors will work either directly with the student or in coordination with the McBurney Center to identify and provide reasonable instructional accommodations. Disability information, including instructional accommodations as part of a student's educational record, is confidential and protected under FERPA. For more, visit <http://mcburney.wisc.edu/facstaffother/faculty/syllabus.php>.
+
+Other extraordinary life circumstances can interfere with class performance. There are various resources available to help students through challenging times, including the Dean of Students Office (<https://doso.students.wisc.edu/>) and the Division of Student Life (<https://students.wisc.edu/>). 
+
+
+Please discuss any potential accommodations with me ASAP, including accommodations that may supersede my other class policies. It is important to me that the classroom is welcoming to all students.
+
+
+## Email Policies
+
+It is virtually certain that I will email you with updates on assignments and course materials. I expect you to read and act on those updates.
+
+I am usually quick to respond to student emails, but some warnings:
+
+- I may not answer certain questions directly and instead refer you to the syllabus, a textbook chapter, or other materials I distribute for class.
+- Last-minute emails about assignments are not guaranteed timely responses. We have at least a week to work on every assignment, and I have intentionally placed my office hours near assignment due dates, in order to give students ample opportunity to identify issues and seek help.
+- I don't anticipate grading disputes (again, the course is pass/fail), but if you have questions/concerns, my policy is to discuss them in person and not over email.
+
+
+# Class Schedule
+
+The schedule below contains course topics, readings, and other helpful links to check out as we go. Due dates for the "midterm" and "final" are included below, but short assignments will be assigned on an ad-hoc basis.
+
+The schedule has _a lot_ of recommended readings and resources. Don't panic. I have erred on the side of over-inclusion, and none of the readings are strictly "assigned." That said, each of them is worth skimming on one's own time. Several of them may come in handy for assignments in the near term. All of them contain lessons that can save you from headaches over the long term.
+
+The schedule is divided into three units. The first unit will give you enough background to achieve liftoff (and complete assignments for PS 813 in R!). The second unit goes beyond the basics to teach you valuable, real-world skills that are under-emphasized (or ignored?) in a typical methods course. The final unit covers advanced skills and practices that catapult you to new frontiers of coding efficiency, statistical understanding, and market value ($\$\$\$$).
+
+## Unit 1: Foundations
+
+January 24: Introductions and software rundown.
+
+- [The Plain Person’s Guide to Plain Text Social Science](https://kieranhealy.org/files/papers/plain-person-text.pdf)
+<!-- Hour 1: syllabus, introductions w/ class, questions -->
+<!-- Hour 2: installing R/Rstudio/git -->
+
+January 31: Project-based workflow. Intro R Markdown.
+
+- WTF-R: [Project-Oriented Workflow](https://rstats.wtf/project-oriented-workflow.html) and [Practice safe paths](https://rstats.wtf/safe-paths.html)
+- [Naming things](https://speakerdeck.com/jennybc/how-to-name-files)
+- [Good enough practices in scientific computing](https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1005510&type=printable)
+<!-- 
+- Rproj, here vs. setwd, READMEs
+- looking fwd: modular aspirations, one script to rule them all, make 
+- sources: Jenny Bryan: projects, here, naming
+-->
+
+February 7: R essentials. Intro Tidyverse.
+
+- R4DS: [Workflow Basics](https://r4ds.had.co.nz/workflow-basics.html)
+- WTF-R: [Saving source and blank slates](https://rstats.wtf/save-source.html)
+- Style guides: [short](http://adv-r.had.co.nz/Style.html) and [long](https://style.tidyverse.org/)
+- [Base R Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/base-r.pdf)
+- Funny but weirdly sublime: [aRrgh: a newcomer’s (angry) guide to R](http://arrgh.tim-smith.us/) and [The R Inferno](http://www.burns-stat.com/pages/Tutor/R_inferno.pdf)
+<!-- 
+- assignment
+- functions
+- never attach
+- intro pipes
+ -->
+
+February 14: Data manipulation. The pipe operator (`%>%`).
+
+- [Data Processing with dplyr & tidyr](https://rpubs.com/bradleyboehmke/data_wrangling) (skip `tidyr` section for now)
+- R4DS: [Data Transformation](https://r4ds.had.co.nz/transform.html) and [Pipes](https://r4ds.had.co.nz/pipes.html)
+- Suzan Baert tutorials: [selecting](https://suzan.rbind.io/2018/01/dplyr-tutorial-1/), [mutating](https://suzan.rbind.io/2018/02/dplyr-tutorial-2/), [filtering](https://suzan.rbind.io/2018/02/dplyr-tutorial-3/), [summarizing](https://suzan.rbind.io/2018/04/dplyr-tutorial-4/)
+- [Data Transformation (dplyr) Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
+- Modern Dive: [Data Wrangling](https://moderndive.com/3-wrangling.html)
+
+<!-- 
+- mutate
+- group by
+- summarize
+- mean(), sum(), etc. 
+- rename, select, arrange, count
+ -->
+
+February 21: Graphics with `ggplot`.
+
+- Graphics resources listed [above](#sec:reading)
+- R4DS: [Data Visualization](https://r4ds.had.co.nz/data-visualisation.html)
+- [Data Visualization (`ggplot`) Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf)
+
+February 28: Regression and model output.
+
+- Modern Dive: [Basic Regression](https://moderndive.com/5-regression.html) and [Multiple Regression](https://moderndive.com/6-multiple-regression.html)
+- [Introduction to `broom`](https://cran.r-project.org/web/packages/broom/vignettes/broom.html)
+- [`estimatr` Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/estimatr.pdf)
+
+
+## Unit 2: What they don't teach you about real data and principled workflow
+
+March 6: Horrors of real data. Reading, cleaning, and joining.
+
+- R4DS: [Data Import](https://r4ds.had.co.nz/data-import.html), [Relational Data](https://r4ds.had.co.nz/relational-data.html), [Strings](https://r4ds.had.co.nz/strings.html), [Factors](https://r4ds.had.co.nz/factors.html), [Dates and Times](https://r4ds.had.co.nz/factors.html)
+- [Data Import Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/data-import.pdf)
+- [Read Data with Multiple Header Rows into R](https://alison.rbind.io/post/2018-02-23-read-multiple-header-rows/)
+- [Strings and Substitutions](https://djnavarro.net/post/strings-and-substititions/) and [Lubridate](https://djnavarro.net/post/lubridate/)
+
+March 13: Shaping data (wide, long, and "tidy"). Writing functions.
+
+- [Data Processing with dplyr & tidyr](https://rpubs.com/bradleyboehmke/data_wrangling) (the sections about `tidyr`)
+- R4DS: [Tidy Data](https://r4ds.had.co.nz/tidy-data.html) and [Functions](https://r4ds.had.co.nz/functions.html)
+- Modern Dive: [Data Importing and “Tidy” Data](https://moderndive.com/4-tidy.html)
+
+March 20: Spring Break
+
+March 27: It's about more than the math (or, Why \LaTeX\ is good and R Markdown is gooder).
+
+- Rmd resources listed [above](#sec:reading)
+- R4DS: [R Markdown](https://r4ds.had.co.nz/r-markdown.html)
+- [R Markdown Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/purrr.pdf)
+- [R Markdown Driven Development](https://emilyriederer.netlify.com/post/rmarkdown-driven-development/)
+- For \LaTeX-specific things: [\LaTeX\ Wikibook](https://en.wikibooks.org/wiki/LaTeX)
+- When your co-author insists on Word: [redoc](https://noamross.github.io/redoc/) (work-in-progress)
+<!-- Hour 1: opts_chunk, inline, english -->
+
+April 3: Intro Git. Committing, ignoring, pushing to remote. 
+
+- [Git for Humans](https://speakerdeck.com/alicebartlett/git-for-humans)
+- [Excuse me, do you have a moment to talk about version control?](https://peerj.com/preprints/3159.pdf)
+- [Happy Git and GitHub for the useR](https://happygitwithr.com/)
+
+
+## Unit 3: The money makers
+
+April 10 **(Midterm assignment due)**: Git skills for the real world. Branches, Gitflow, large data. 
+
+- [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/)
+- [Git can facilitate greater reproducibility and increased transparency in science](https://scfbm.biomedcentral.com/articles/10.1186/1751-0473-8-7)
+- [Oh shit, Git!?!](https://ohshitgit.com/)
+- [Opinionated analysis development](https://peerj.com/preprints/3210/)
+
+April 17: Functions you can pull up to: `apply`, `purrr`, anonymous, formulas.
+
+- R4DS: [Iteration](https://r4ds.had.co.nz/iteration.html) and [Many Models](https://r4ds.had.co.nz/many-models.html)
+- [Purrr Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/master/purrr.pdf)
+- [Purrr - tips and tricks](https://www.hvitfeldt.me/blog/purrr-tips-and-tricks/)
+- [Purrr Tutorial](https://jennybc.github.io/purrr-tutorial/index.html)
+
+ 
+April 24 and May 1: Advanced topics. Pick two.
+ 
+- Simulation-based methods (bootstrapping, cross-validation, randomization inference)<!-- MCMC?  -->
+- Causal vs. predictive models (causal inference, intro machine learning)
+- The command line (shells, dotfiles, paths)
+- Remote computing (server clusters, containers/virtual machines)
+- Databases (SQL)
+<!-- - Websites with R Markdown (`blogdown`, Hugo) -->
+- Tools/skills rundown for non-academic careers (a blend of the above)
+- "Advanced reproducibility" (dissertations with `Rmd`, `make`, modularity)
+- Will also take suggestions
+
+<!-- 
+    - The "statistical crisis" (publication, replication, technology, etc.)
+    - Advanced reproducibility (`bookdown` dissertation, `make`, modularity)
+- make? etc.
+- causal inference 
+
+
+
+April 24: Simulation-based algorithms (bootstrapping, cross-validation, randomization inference, MCMC).
+
+- [Resampling Techniques in R: Bootstrapping and Permutation Testing](https://uoftcoders.github.io/studyGroup/lessons/r/resampling/lesson/)
+- [Overfitting: A Guided Tour](https://www.alexpghayes.com/blog/overfitting-a-guided-tour/)
+- [A Zero-Math Introduction to Markov Chain Monte Carlo Methods](https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50)
+
+May 1: The strange dance of machine learning and causal inference
+
+- [The Causal Interpretation of Estimated Associations in Regression Models](https://www.cambridge.org/core/journals/political-science-research-and-methods/article/causal-interpretation-of-estimated-associations-in-regression-models/4488EC8925CF8F623CDE655E01268F6F)
+- [Does Regression Produce Representative Estimates of Causal Effects?](https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12185?casa_token=ni-7Ez1IOr0AAAAA%3AiaBEJKWKDCduQDQjgE1YOtbkJTtSDO9Z6-xlY7PreUPM4IzwJ634U9kZvovCAGE_25W4shlhNKnGJrQ)
+- [Want to make good business decisions? Learn causality](https://multithreaded.stitchfix.com/blog/2019/12/19/good-marketing-decisions/)
+- [Retrospective Causal Inference with Machine Learning Ensembles](https://www.cambridge.org/core/journals/political-analysis/article/retrospective-causal-inference-with-machine-learning-ensembles-an-application-to-antirecidivism-policies-in-colombia/B27477770599A4CE0ACB9204685EA95B)
+ -->
+
+
+
+## Final project due (pushed to Git remote) by Thursday, May 7, 7:45 a.m.
