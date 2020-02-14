@@ -6,6 +6,11 @@ Essentials
 
 - January 24: Syllabus, installing R/Rstudio/git
 - January 31: Projects and Rmarkdown intro
+    - [ ] set up project
+    - [ ] explain why
+    - [ ] R script, run simple commands
+    - [ ] Build an Rmarkdown (html, then tinytex)
+    - [ ] 
 - February 7: R basics and Tidyverse philosophy
 - February 14: data manipulation/pipes (order depending on data choice)
 - February 21: ggplot
@@ -13,7 +18,10 @@ Essentials
 
 What they don't teach you (pt 1): real data, workflow
 
-- March 6: reading nasty data
+- March 6: reading, cleaning, joining
+    - dta, fwf, RDS, Rdata
+    - nasty string characters
+    - join state data
 - March 13: tidying data (aka "shaping")
 - March 20: **BREAK**
 - March 27: TeX math, smart Rmd (opts_chunk, inline, english)
@@ -27,7 +35,7 @@ What they don't teach you (pt 2): marketable skills
 - May 1: causal inference
 
 
-
+<!-- other?
 
 - [ ] manipulation
     - abv/below avg ideology w/in state?
@@ -39,3 +47,4 @@ What they don't teach you (pt 2): marketable skills
 - [ ] estimating models and model output
 - [ ] causal inference
 - [ ] git
+ -->
