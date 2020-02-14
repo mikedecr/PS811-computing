@@ -1,0 +1,233 @@
+---
+title: "Intro"
+subtitle: ""
+author: ""
+date: ""
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    selfcontained: true
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_SVG"
+    # css: "kunoichi"
+    css: xaringan-themer.css
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "https://platform.twitter.com/widgets.js"
+# bibliography: ../../paper-rmd/assets/voter-id-bib.bib
+# biblio-style: ../../paper-rmd/assets/apsr-leeper.bst
+---
+
+class: middle, center
+
+
+```{r setup-rmd, include = FALSE, cache = FALSE}
+source(here::here("code", "assets", "slide-helpers.R"))
+```
+
+```{r inf, include = FALSE, cache = FALSE, eval = FALSE}
+xaringan::inf_mr(here::here("lessons", "01-intro", "01-intro.rmd"))
+# servr::daemon_stop(1)
+```
+
+
+.pull-left[
+# **PS 811: Statistical Computing**
+
+<br>
+Michael DeCrescenzo
+<br>
+University of Wisconsin–Madison
+
+]
+
+.pull-right[
+```{r, include = TRUE, fig.width = 4, fig.height = 3, out.width = "100%"}
+tibble(
+  x = seq(0, 1, .01)
+) %>%
+  crossing(b = seq(1, 10, length.out = 5)) %>%
+  mutate(dbeta = dbeta(x, 3, b)) %>%
+  ggplot() +
+  aes(
+    x = x, 
+    y = dbeta, 
+    color = as.factor(b), 
+    fill = as.factor(b)
+  ) +
+  geom_line() +
+  geom_ribbon(
+    aes(ymin = 0, ymax = dbeta),
+    color = NA,
+    alpha = 0.2
+  ) +
+  viridis::scale_fill_viridis(discrete = TRUE, end = 0.9) +
+  viridis::scale_color_viridis(discrete = TRUE, end = 0.9) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+    panel.border = element_blank(),
+    panel.background = element_blank()
+  ) 
+```
+
+]
+
+## Introductions & Software Rundown
+
+`r format(Sys.time(), '%B %d, %Y')`
+
+
+
+---
+
+class: center
+
+# Course Aims
+
+<br>
+
+### Essential data science
+
+### Emphasis on integrated workflow
+
+### Principled, reproducible, cutting-edge
+
+
+
+---
+
+# Data Science
+
+.pull-left[
+#### R
+
+- Flexible ("functional"), a real language
+- "The Tidyverse" makes R _so much better_
+- Valued in industry
+
+
+#### R Markdown
+
+- Fix errors and inefficiencies in code $\rightarrow$ paper process
+- $\mathrm{\LaTeX}$ without (as much) overhead
+]
+
+.pull-right[
+#### RStudio
+
+- Friendly environment for working with R and Rmd
+- (Use a different IDE if you prefer)
+]
+
+---
+
+# Workflow: integrating tools and practices
+
+(because NOTHING happens in a bubble)
+
+.pull-left[
+#### Project-based workflow
+
+- Self-contained, robust code (think filepaths...)
+- Essential for collaboration/sharing
+- Facilitated by IDEs, version control...
+]
+
+
+.pull-right[
+#### Version control with Git
+
+- Track iterative changes to a code-based project
+- Sync online to backup/share/collaborate
+- using **Sourcetree** desktop app
+]
+
+---
+
+class: center, middle, inverse
+
+# My soapbox
+
+???
+
+This class has been underserving students forever
+
+- only recently have Devin and I been pushing to make this class more aggressive
+
+Learning statistical software is about so much more than getting through a stats class
+
+- just getting by is a shitty goal
+- If you learn this stuff well, you're going to be so much more productive with your data, getting data into papers
+- You're going to have projects that meet higher standards of replication
+- You're going to be so much more _capable_ at dealing with future problems (in computer and otherwise)
+- You are going to look better as a researcher by giving signals that you adhere to principled workflow standards
+
+You are also skill-building for a life outside of academia, if it comes to that.
+
+- I encourage you not to think only about graduate school as professor training
+- It's hard to become a professor, and you only have a finite amount of bandwidth to learn skills that optimize your life given the uncertainties
+- This stuff is HUGE. Getting good at computational research stuff is big time valuable. It's going to help you turn your research mind into attractive research products that will help you in the future
+
+So PLEASE come to me with questions, issues, about this class or others, I don't care. I want to help you learn methods stuff because it's the imprint that I want to have in your lives.
+
+---
+
+# About Mike
+
+Political Science PhD cand (final year??), US Politics & Methods
+
+From St. Louis MO, stints in Berkeley CA
+
+
+### Office Hours
+
+Wednesday 2–5 **in Colectivo (State St.)**
+
+---
+
+# Links to watch
+
+Canvas
+
+My website: <https://mikedecr.github.io/teaching/computing-811/>
+
+My Github: <https://github.com/mikedecr/PS811-computing>
+
+---
+
+# Read the syllabus
+
+Have we talked about?
+
+- two-hour setup
+- Tidyverse
+- Readings
+- Seeking help
+- Assignments
+- Collaboration
+- Accommodations
+- Potential reorganization
+- Final weeks
+
+
+???
+
+Other things to check
+
+- Introductions
+    - name, program, computing experience, something you want to learn
+- Install
+    - R
+    - Rstudio
+    - Git
+    - Sourcetre
+
+
+

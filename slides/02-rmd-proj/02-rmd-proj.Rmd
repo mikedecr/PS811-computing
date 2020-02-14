@@ -1,0 +1,296 @@
+---
+title: "Projects"
+subtitle: ""
+author: ""
+date: ""
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    selfcontained: true
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_SVG"
+    # css: "kunoichi"
+    css: xaringan-themer.css
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "https://platform.twitter.com/widgets.js"
+# bibliography: ../../paper-rmd/assets/voter-id-bib.bib
+# biblio-style: ../../paper-rmd/assets/apsr-leeper.bst
+---
+
+class: middle, center
+
+
+```{r setup-rmd, include = FALSE, cache = FALSE}
+source(here::here("code", "assets", "slide-helpers.R"))
+```
+
+```{r inf, include = FALSE, cache = FALSE, eval = FALSE}
+xaringan::inf_mr(here::here("lessons", "01-intro", "01-intro.rmd"))
+# servr::daemon_stop(1)
+```
+
+
+.pull-left[
+# **PS 811: Statistical Computing**
+
+<br>
+Michael DeCrescenzo
+<br>
+University of Wisconsin–Madison
+
+]
+
+.pull-right[
+```{r, include = TRUE, fig.width = 4, fig.height = 3, out.width = "100%"}
+tibble(
+  x = seq(0, 1, .01)
+) %>%
+  crossing(b = seq(1, 10, length.out = 5)) %>%
+  mutate(dbeta = dbeta(x, 3, b)) %>%
+  ggplot() +
+  aes(
+    x = x, 
+    y = dbeta, 
+    color = as.factor(b), 
+    fill = as.factor(b)
+  ) +
+  geom_line() +
+  geom_ribbon(
+    aes(ymin = 0, ymax = dbeta),
+    color = NA,
+    alpha = 0.2
+  ) +
+  viridis::scale_fill_viridis(discrete = TRUE, end = 0.9) +
+  viridis::scale_color_viridis(discrete = TRUE, end = 0.9) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+    panel.border = element_blank(),
+    panel.background = element_blank()
+  ) 
+```
+
+]
+
+## Projects, R Markdown, basic R
+
+`r format(Sys.time(), '%B %d, %Y')`
+
+
+
+---
+
+# [github.com/mikedecr/example-project](https://github.com/mikedecr/example-project)
+
+--
+
+Download as `.zip` (save somewhere that ISN'T your PS-811 folder)
+
+or, in your command line terminal (e.g. in RStudio)
+
+```{bash, eval = FALSE, include = TRUE, echo = TRUE}
+# navigate to a folder of your choosing, and then
+# clone (download/copy) the repository
+
+pwd              # (P)rint (w)orking (d)irectory (aka current folder)
+ls               # (L)i(s)t folder contents
+cd ~/desktop     # (C)hange (D)irectory to place of your choosing
+                 # ~ means "top of user profile"
+                 # [this particular destination may not work for you!]
+
+# copy this url from the Github page
+git clone https://github.com/mikedecr/example-project.git
+```
+
+
+---
+
+# Open `project-demo.Rproj`
+
+--
+
+.pull-left[
+
+The "Panes"
+
+- **Console**: R's living brain. Where commands are executed/printed.
+
+- **Source**: Write code, save files. Execute w/ a "keybind"
+
+- **Environment:** What data objects do I have?
+
+- **Files/Plots/Help**: Useful misc. things
+
+]
+
+--
+
+.pull-right[
+
+Why `.Rproj?`
+
+- Top right? Project name!
+- Files? The project folder!
+
+```{r, echo = TRUE, include = TRUE, eval = FALSE}
+# type in console:
+getwd()
+
+# prints current location 
+# (hint: the project folder!)
+```
+
+]
+
+
+---
+
+# Projects in Action
+
+In the "Files" pane, open `00_build.R`
+
+Install the packages (one at a time) 
+
+- This also updates package versions
+
+- Packages? Contain extended R capabilities (functions)
+
+
+While these install...
+
+
+
+---
+
+# Why Projects?
+
+.pull-left[
+
+**Organization**: everything in its place
+
+**Replication**: coherent structure means _robust to development_
+
+]
+
+
+.pull-right[
+
+**Portability**: self-contained, can be moved/shared
+
+**Transparency**: sync to Github, view changes/contributors, rewind
+
+]
+
+
+---
+
+class: middle, center
+
+# Continue building project
+
+
+---
+
+# Project-oriented practices
+
+.pull-left[
+
+**R should be a blank slate**
+
+- New R "session" when (re-)opening a project
+- Never _save_ nor _restore_ session `.Rdata` (change settings)
+- Save the _source code_, not the results! (REPRODUCIBILITY)
+- Leave a paper trail: NEVER modify data by hand, NEVER save over raw data, ONLY use code
+
+]
+
+--
+
+.pull-right[
+
+**Open RStudio from `.Rproj` file**
+
+
+**"Practice safe paths"**
+
+- What is a path?
+- To-down view: project "root"
+- Subfolders are for going _in_, never _out_
+- `file.path("data", "clean")`
+- `here("data", "clean")`
+
+
+Use [**good names**](https://speakerdeck.com/jennybc/how-to-name-files) (link)
+
+]
+
+
+---
+
+class: center, middle
+
+# Start a new RStudio project for this course
+
+Already have a PS-811 folder? Too bad. Start a new one.
+
+
+---
+
+# Two types of files
+
+.pull-left[
+**R file**
+
+- file extension `.R`
+
+- contains ONLY R code
+
+- send commands directly to console
+]
+
+.pull-right[
+**R Markdown**
+
+- file extension `.Rmd`, combines R code with writing ("Markdown" syntax)
+
+- When editing, can still write/execute R code within "code chunks"
+
+- Intended to be converted to your desired output file type (HTML, PDF)
+
+- Markdown: plain text symbols that convey formatting of the output (e.g. `_italics_` or `**bold**`)
+
+]
+
+---
+
+# Rendering ("knitting") an R Markdown document
+
+When you "knit," this happens automatically:
+
+1. Begin with `.Rmd` file, containing R and writing. 
+
+2. R code is evaluated. Results incorporated into the rest of the Markdown (`.md`). 
+
+3. Sent to Pandoc, a program that converts document formats.
+    - HTML is "default" (no output specified)
+    - if you choose PDF, this invokes $\mathrm{\LaTeX}$
+
+---
+
+class: middle, center
+
+# New R file, new R Markdown file
+
+
+
+
+
+
+
