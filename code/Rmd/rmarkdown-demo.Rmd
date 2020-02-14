@@ -1,0 +1,104 @@
+---
+title: "Basic R Markdown Document"
+author: "Michael DeCrescenzo"
+date: "1/31/2020"
+
+# note that I've taken some control of the output here.
+output: 
+  pdf_document:
+    keep_tex: true
+    number_sections: true # default is false
+urlcolor: blue
+fontsize: 12pt
+---
+
+This is an R Markdown document. It combines the text formatting syntax of Markdown with R code to produce documents with various output formats. 
+
+This document is designed to be VERY simple. As we progress farther into the course, we will introduce more features of R Markdown. This document contains enough to get up and running.
+
+First, we will discuss text formatting with Markdown. Only after that does this document address the inclusion of R code.
+
+
+# Markdown syntax
+
+Markdown syntax is nice because it is relatively simple. You create section headers using the pound key (`#`). More pound keys create lower-level sections (see the code!)
+
+## Basics of text formatting
+
+Markdown is easy! You can write with _italics_, or in **bold face**, or in `monospace, which looks like code`. You can make
+
+- unordered
+- lists
+- pretty easily,
+
+as well as
+
+1. ordered lists.
+1. Notice how the numbering
+1. in the source file
+1. doesn't have to match the output!
+
+You can directly embed URLs, for instance, to <https://www.google.com>, or you can include a hyperlink to [Google dot com](https://www.google.com).
+
+
+## Writing papers
+
+There are some more advanced Markdown features for writing technical documents. For instance, you can include footnotes.^[
+  In case you want to include some details.
+]
+
+It is also possible to format citations using special commands. These are easy once you learn them, but we need to talk about how to set it up first! We'll come back to that.
+
+
+## Using $\text{\LaTeX}$
+
+R Markdown is capable of parsing $\text{\LaTeX}$ commands.^[
+  You may be wondering, "what is $\text{\LaTeX}$?" It is code-based typesetting system, designed for PDF output. It is famous for its nicely formatted math, high standards for formal typography, and flexibility with playing figures, tables, and other features of technical writing. When you render an R Markdown document as PDF, it runs through the $\text{\LaTeX}$ compilation system!
+]
+You can do inline math (like $y_{i} = \alpha + \beta x_{i} + \epsilon_{i}$), and you can also do "display math," such as...
+\begin{align}
+  y_{i} &= \alpha + \beta x_{i} + \epsilon_{i} \\
+  \epsilon_{i} &= y_{i} - \hat{y}_{i}
+\end{align}
+
+This is really cool, but you should be careful how you use $\text{\LaTeX}$. Here are some rules:
+
+- When compiling to HTML, R Markdown uses tools that will display $\text{\LaTeX}$ _math_, but only math. If you want to be able to display your document in multiple output formats, you should limit your $\text{\LaTeX}$ code to be _only_ in math environments.
+- When you're compiling to PDF, you have more freedom to type $\text{\LaTeX}$ code directly into your document (math mode or not) and the document conversion typically works pretty well. 
+
+Because HTML has weaker $\text{\LaTeX}$ capabilities than PDF (naturally), it can be helpful to develop a document for HTML output "by default." This is because it is easier to go from HTML to PDF than vice versa. The HTML build process is also _faster_ than the PDF build process, especially for complex documents!
+
+
+## Getting used to editing plain text
+
+Some people struggle with this. They like to be able to see the page in front of them. 
+
+I've found it helpful to set up your RStudio editor with a color scheme and font that you find pleasing. I like the [Consolas](https://www.fontpalace.com/font-details/Consolas/) type family, and I like the [Solarized](https://ethanschoonover.com/solarized/) family of color schemes. 
+
+There are also ways to host your HTML output on a local server port in your computer using the output format `xaringan::infinite_moon_reader`. This lets you see your output update automatically, but you still have to edit in the source file.
+
+
+# Including R Code
+
+R Markdown files can include R code directly. R code lives in "chunks," which are blocks of code set aside like this:
+
+```{r}
+"hello!"
+```
+
+When you are editing your `.Rmd` file, you can run R code directly in RStudio as long as it lives in these little chunks. Cool! That makes the editing process easy. 
+
+When you _build_ your document, you may want these chunks to behave in certain ways, e.g., hide the source code, hide the output by default, and so on. We will learn more about how to control the behavior of R chunks as the course progresses.
+
+Just like with $\text{\LaTeX}$, I can also use inline R code, e.g. `r "hello!"`. 
+
+How does it work that an `.Rmd` can contain R and Markdown? Well, first of all, an `.Rmd` file is just text. It doesn't "do" anything. The only reason why it comes to life is because (1) RStudio has tools to make editing `.Rmd` files easier, and (2) programs in your computer know how to interpret their contents and build the output.
+
+When an R Markdown document compiles (sometimes called "knitting"), here's what happens _automatically_:
+
+1. If there is R code in the `.Rmd` file, the code is interpreted by R and the output is set aside.
+2. Your `.Rmd` is converted to a plain Markdown file (`.md`). Since most of your document is Markdown already, most of it is unaffected. However, if you have R code, the output is included in the appropriate locations and formatted _as Markdown syntax_. The original R code may be deleted or preserved, depending on your chunk settings. 
+3. The `.md` file is converted to its final output: HTML, PDF, even Microsoft Word! This is done with a program called `pandoc`, which existed before R Markdown. In reality, all R Markdown really does is convert from `Rmd` to `md`, and `pandoc` handles the rest!
+
+
+
