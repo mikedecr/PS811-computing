@@ -1,0 +1,110 @@
+---
+title: |
+  | **Skill Task 1** 
+  | R Markdown, File Paths with `here()`
+author: "PS 811: Statistical Computing"
+date: "Due February 14, 2020"
+# fonts:
+#   - package: MinionPro
+#     options: lf, mathtabular, minionint
+#   - package: FiraSans
+#     options: scaled = 0.9
+#   - package: zi4
+#     options: varqu, scaled = 0.95
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+geometry: margin=1.25in
+# compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes:
+  \usepackage[lf, mathtabular, minionint]{MinionPro} 
+  \usepackage[scaled = 0.9]{FiraSans} 
+  \usepackage[varqu, scaled = 0.95]{zi4}
+  \usepackage[small, bf]{titlesec} 
+---
+
+# Setup
+
+Download the `CAFE.csv` data from Canvas. Save it to your `data` folder inside of your **class "project" folder.**
+
+In your project "root" (the top of your project), create a folder for skills assignments. You can call it `skills`.
+
+Create a new R Markdown file (File > New File > R Markdown). Set it up for PDF output, and call it `skills-1.Rmd`. Save it in the `skills` folder. 
+
+
+# Running R Code
+
+An R Markdown document isn't the same as a regular R file, but it can run R inside of "code chunks." Begin a new R code chunk. (You can type out the chunk syntax manually, use the menu buttons, or search for the keyboard shortcut using the "Help" tab!)
+
+Practice running some basic R code inside the chunk. Create two variables called `first` and `last` that contain your first and last name, respectively. Since these objects contain _character data_ (a.k.a. "strings"), the character data must be put in quotes. See the example below:
+
+```{r, echo = TRUE, eval = FALSE}
+# Notice the difference between dog and "dog"
+
+dog # if unquoted, R thinks this is an object called `dog`. 
+    # If there is no `dog` object, you get an error.
+
+"dog" # Whereas this is a piece of character data. 
+      # R recognizes this as text.
+```
+
+Then use the `c()` function to combine your first and last name objects into one vector. Here's how it looks for me.
+
+```{r echo = FALSE, include = FALSE}
+first <- "Michael"
+last <- "DeCrescenzo"
+```
+
+```{r}
+c(first, last)
+```
+
+Since `c()` creates vectors (and we will use a lot of vectors), we will use a lot of `c()`.
+
+# Import data using `here()`
+
+We saw in lecture that projects have an _intentional_ organizational structure. We take advantage of this structure and build safe file paths using the `here` package. 
+
+In a new code chunk, attach the `here` and `tidyverse` packages^[
+  Using the `library()` function. Some advice: do _not_ set `cache = TRUE` on a code chunk that loads packages.
+]
+Notice that you when load `here`, it tells you where `here()` is. It should be your project root. Here is what mine shows.
+
+```{r}
+library("here")
+```
+
+In another new code chunk, use the `read_csv()` function to import the data from `CAFE.csv`. Specify the path to this file by coming the `here()` function with the appropriate folder and file names.^[
+  Hint: consult the example project for guidance building a file pathway using `here()`.
+]
+The object won't save unless you assign the results of `read_csv()` to an object name.
+
+This dataset describes U.S. senators' votes on a fuel efficiency bill and their campaign contributions from individuals who work for automobile manufacturers.^[
+  Learn more here: <https://vincentarelbundock.github.io/Rdatasets/doc/Stat2Data/CAFE.html>
+]
+We will use it for some examples this semester.
+
+Once the object is saved, you should be able to preview it in the console by running a command containing only the object name. Do this, and make a note in your `Rmd` file of how many rows (observations) and columns (variables) are in the full data set.
+
+#  Knit to PDF
+
+When you are done, "knit" (a.k.a. "render") your R Markdown document to PDF. 
+
+Upload both your `.Rmd` and `PDF` files to Canvas. Because we used a robust project-oriented workflow, I should be able to run your `.Rmd` file and produce identical PDF output :)
+
+
+
+
+
+
+
+

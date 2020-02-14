@@ -1,0 +1,105 @@
+---
+title: |
+  | **Skill Task 2** 
+  | Data Manipulation and Pipes
+author: "PS 811: Statistical Computing"
+date: "Due February 14, 2020"
+# fonts:
+#   - package: MinionPro
+#     options: lf, mathtabular, minionint
+#   - package: FiraSans
+#     options: scaled = 0.9
+#   - package: zi4
+#     options: varqu, scaled = 0.95
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+geometry: margin=1.25in
+# compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes:
+  \usepackage[lf, mathtabular, minionint]{MinionPro} 
+  \usepackage[scaled = 0.9]{FiraSans} 
+  \usepackage[varqu, scaled = 0.95]{zi4}
+  \usepackage[small, bf]{titlesec} 
+---
+
+This assignment revisits the CAFE data from the previous skills task. It describes how Senators voted for a certain fuel efficiency standards bill and their total campaign contributions-to-date from individuals who work for auto manufacturers.^[
+  I have removed/modified some of the original variables, but you can learn more about the data here: <https://vincentarelbundock.github.io/Rdatasets/doc/Stat2Data/CAFE.html>
+]
+
+Begin a new session of R, and make sure you are working out of your PS 811 project. 
+
+Write an R file (R file! no R Markdown!) that fulfills the following tasks. Use the `tidyverse` verbs and the pipe operator (`%>%`). 
+
+1. Load the `here` and `tidyverse` packages, and import `CAFE.csv` into R (use `here()` to build the file path).
+3. Investigate the dataset at a high level. Look at the variable names (`names()`), examine the number of rows (`nrow()`) and columns (`ncol()`), and get a rough summary of the variables (`summary()`).
+4. Use the `count()` function to determine if the bill passed, based on the number of senators voting for or against. 
+5. Use `mutate()` and `case_when()` to create a more informative party affiliation variable^[
+  The party codes are the same as the data from lecture.
+]
+and an _indicator variable_ of a Yea vote, taking the value of $1$ if the Senator voted Yea or $0$ if they voted Nay.
+6. Which party was more supportive of the bill? Use your new variables along with the `group_by()` and `summarize()` functions to calculate the proportion of each party that supported the bill.^[
+  Hint: if you calculate the mean of a binary indicator variable, it is equal to the proportion of $1$s!
+]
+7. _**Bonus**_: use the tools we've learned so far to determine which states had two Senators vote identically, and which states had two Senators vote differently. Your result should be a state-level data frame (50 rows) with a variable that indicates if Senators "co-voted."
+
+When you are done, upload your R file to Canvas. 
+
+```{r, include = FALSE, echo = FALSE, eval = FALSE}
+library("here")
+library("magrittr")
+library("tidyverse")
+
+# read data
+cafe <- read_csv(here("data", "CAFE.csv")) %>%
+  print()
+
+# investigate
+names(cafe)
+nrow(cafe)
+ncol(cafe)
+summary(cafe)
+
+# did it pass?
+cafe %>% count(Vote)
+
+# mutate
+cafe_alt <- cafe %>%
+  mutate(
+    Party = case_when(
+      Party_Code == 100 ~ "Democrat",
+      Party_Code == 200 ~ "Republican",
+      Party_Code == 328 ~ "Independent"
+    ),
+    Yea_Vote = case_when(
+      Vote == "Yea" ~ 1,
+      Vote == "Nay" ~ 0
+    )
+  ) %>%
+  print()
+
+
+# vote by party
+cafe_alt %>%
+  group_by(Party) %>%
+  summarize(
+    Prop_Yea = mean(Yea_Vote, na.rm = TRUE)
+  )
+
+# co-voting
+cafe_alt %>%
+  group_by(State) %>%
+  summarize(
+    covoting_senators = sum(Yea_Vote) %in% c(n(), 0)
+  )
+```
+
