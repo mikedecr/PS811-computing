@@ -1,0 +1,31 @@
+copy into notebook!
+
+- last week: PROJECTS and RMARKDOWN
+    - show what project should look like
+    - you'll explain the value of directories soon.
+    - show demo document
+    - Open an Rmd file, show the difference between text and R.
+    - Explain the R Markdown pipeline
+- Make sure PDFLaTeX runs
+- apologize for software superiority complex joke
+
+- This week:
+    - dip into R and tidyverse
+    - get as far as get
+    - next week maybe go back and do more R Markdown, 
+    or jump ahead to graphics
+
+- File 02
+    - explain directories
+    - explain here
+    - Explain DATAAAAAA
+
+
+What we aren't getting to:
+
+- str_detect
+- str_replace
+- expand(), crossing()
+- n(), row_number()
+
+

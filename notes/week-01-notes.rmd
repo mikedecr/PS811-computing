@@ -1,0 +1,94 @@
+---
+title: "Setting up RStudio"
+author: Michael DeCrescenzo
+date: "`r Sys.Date()`"
+output: 
+  knit: stop("NO KNITTING")
+---
+
+# Get the repository
+
+- github.com/mikedecr/example-project
+- we're going to download a folder
+    - Navigate some place you want to save it. (Using terminal or explorer)
+    - if you have a folder for this class, don't put it INSIDE
+    - either download the zip and place it somewhere easy, git clone
+- open .Rproj file, opens Rstudio project
+
+
+# Rstudio panes
+
+- source
+- console/terminal
+- environment
+- files/plots/etc
+
+
+# Demonstrate project
+
+- (install packages one at a time)
+
+Why projects?
+
+- Keep everything in one folder.
+- Replication, I can rerun things because there is a coherent structure
+- Transparency, I can understand it. I can put it online and other people can understand it.
+- Portability, I can move the folder.
+    - I clone my project to the SSCC
+- Git: I can manage the project with "version control." 
+    - If I break something, I can go back
+    - See what you changed and when
+    - See what _other people_ changed and when
+
+Folder structure:
+
+- code, data, writing
+- output, slides, scratch notes
+- _execute the project_
+
+
+Project practices:
+
+- safe paths (here)
+- Always a blank slate:
+    - Switch to new project? New R session.
+    - Re-open the same project? New R session. (no `rm(list = ls())`)
+    - Save the _code_, not the results.
+- Rstudio options
+    - never restore .Rdata
+    - never ask to save
+    - history? Depends
+    - soft wrap if you wish (aim for <80 characters)
+    - Font, colors
+    - pane layout
+- open from .Rproj, or the top right of Rstudio
+    - `getwd()`
+- `file.path()` and (even better) `here()`
+
+
+
+naming things:
+
+- <https://speakerdeck.com/jennybc/how-to-name-files?slide=3>
+
+
+# New R File
+
+Interacting with R
+
+- R is a calculator
+- assign
+- everything is an object
+- vectors with `c()`
+- functions
+- everything is vector-likes
+- read data
+- data frames
+
+
+# New Rmarkdown file
+
+From PDF
+
+Chunk options
+
