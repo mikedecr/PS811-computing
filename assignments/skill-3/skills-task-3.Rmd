@@ -1,0 +1,141 @@
+---
+title: |
+  | **Skill Task 3** 
+  | Graphics
+author: "PS 811: Statistical Computing"
+date: "Due February 28, 2020"
+# fonts:
+#   - package: MinionPro
+#     options: lf, mathtabular, minionint
+#   - package: FiraSans
+#     options: scaled = 0.9
+#   - package: zi4
+#     options: varqu, scaled = 0.95
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+    # highlight: kate
+geometry: margin=1.25in
+# compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes:
+  \usepackage[lf, mathtabular, minionint]{MinionPro} 
+  \usepackage[scaled = 0.9]{FiraSans} 
+  \usepackage[varqu, scaled = 0.95]{zi4}
+  \usepackage[small, bf]{titlesec} 
+---
+
+The `CAFE` dataset describes how Senators voted for a fuel efficiency standards bill (The "Corporate Average Fuel Economy" Bill) and their campaign contributions from individuals who work for auto manufacturers (to date). Use this dataset to visualize the relationship between contributions ($x$) and the Senators' votes ($y$). You can emulate the graphic in this document (I discuss helpful tips below), or you can put your own spin on how you want to visualize the information. Ensure that your graphic looks professional. For example, use informative labels instead of the _blah_ variable names from the dataset.
+
+
+```{r include = FALSE, echo = FALSE}
+knitr::opts_chunk$set(
+  eval = TRUE, 
+  echo = FALSE, collapse = FALSE,
+  include = FALSE, warning = FALSE, message = FALSE,
+  cache = TRUE, 
+  # cache.path = here::here("slides", "facebook", "facebook_cache/"),
+  # fig.path = here::here("slides", "MPMC-2019", "MPMC_figs/"),
+  # dpi = 100, fig.retina = 3, 
+  fig.device = "cairo_pdf",
+  fig.align = "center"
+)
+```
+
+
+```{r, include = FALSE, cache = FALSE}
+library("here")
+library("tidyverse")
+```
+
+```{r echo = FALSE, include = FALSE, message = FALSE, warning = FALSE, cache = TRUE}
+cafe_raw <- read_csv(here("data", "cafe.csv")) %>%
+  print()
+
+
+cafe <- cafe_raw %>%
+  mutate(
+    Yea = case_when(
+      Vote == "Yea" ~ 1,
+      Vote == "Nay" ~ 0
+    ),
+    Caucus = case_when(
+      Party_Code == 200 ~ "Republican Caucus",
+      Party_Code %in% c(100, 328) ~ "Democratic Caucus"
+    )
+  ) %>%
+  print()
+
+```
+
+```{r, include = TRUE, fig.width = 5, fig.height = 4, out.width = "80%"}
+ggplot(cafe) +
+  aes(x = Contribution, y = Yea, color = Caucus) +
+  geom_point(shape = 1) +
+  geom_smooth(
+    # color = "black",
+    se = FALSE,
+    size = 0.5, 
+    method = "glm", 
+    method.args = list(family = binomial(link = "logit"))
+  ) +
+  # facet_grid(. ~ Caucus) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  theme(panel.grid.minor = element_blank()) +
+  scale_x_log10(
+    labels = scales::dollar_format(),
+    name = "Campaign Contributions from\nAuto Manufacturer Employees (Log Scale)"
+  ) +
+  # scale_x_continuous(
+  #   breaks = seq(0, 200000, 25000),
+  #   labels = scales::dollar_format()
+  #   name = "Contributions from Auto Manufacturer Employees"
+  # ) +
+  labs(
+    y = 'Probability of "Yea" Vote',
+    color = NULL,
+    fill = NULL
+  ) +
+  scale_color_manual(
+    values = c("Democratic Caucus" = "dodgerblue",
+               "Republican Caucus" = "tomato")
+  )
+```
+
+
+# Tips
+
+\paragraph{Recoding variables:}
+As we saw from Skills Task 2, this dataset contains Republican, Democratic, and Independent senators. In practice, Independents tend to "caucus" with one of the two major parties, meaning they coordinate activities and vote together. In this dataset, the only Independent senator (Jim Jeffords) caucused with the Democrats. Instead of using the `Party_Code` variable in the data, create a `Caucus` variable that codes Independents as Democrats.
+
+Create a binary (0/1) `Yea_Vote` variable as you did for Skills Task 2. This will serve as the Y variable.
+
+\paragraph{Geoms:} In addition to points, I plotted a line using `geom_smooth()`. When the $y$ variable is binary, linear models tend to behave weirdly, so I used a nonlinear _logistic_ regression line. You can create this yourself by copying the code below and adding it to your plot.
+
+```{r include = TRUE, eval = FALSE, echo = TRUE}
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = binomial(link = "logit"))
+  )
+  # glm means "generalized linear model"
+  # `family` and `link` set the probability model/link function
+```
+
+\paragraph{Aesthetics:} You will notice that I mapped `color` according to the `Caucus` variable, and then I manually set the colors. Note also that I transformed the $x$ axis to the log scale (`scale_x_log10()`). This isn't necessary, but it can sometimes be helpful for displaying dollar values, which often have large outliers. I modified the tick labels using `labels = scales::dollar_format()`, which formats tick labels with a dollar sign and commas in the appropriate places.
+
+\paragraph{Other possibilities:} Consider the following.
+
+I played with plotting the two party caucuses in different facet panels, but eventually didn't. I also experimented with different point shapes, "jittering" the point positions, keeping the confidence intervals from `geom_smooth()` (I eventually didn't keep them), a title and subtitle for the plot, and so on. 
+
+Experiment with the things we learned in class/in the notes to make your plot look nice! 
+
+
