@@ -33,7 +33,7 @@ header-includes:
   \usepackage[small, bf]{titlesec} 
 ---
 
-The `CAFE` dataset describes how Senators voted for a fuel efficiency standards bill (The "Corporate Average Fuel Economy" Bill) and their campaign contributions from individuals who work for auto manufacturers (to date). Use this dataset to visualize the relationship between contributions ($x$) and the Senators' votes ($y$). You can emulate the graphic in this document (I discuss helpful tips below), or you can put your own spin on how you want to visualize the information. Ensure that your graphic looks professional. For example, use informative labels instead of the _blah_ variable names from the dataset.
+The `CAFE` dataset describes how Senators voted for a fuel efficiency standards bill (The "Corporate Average Fuel Economy" Bill) and their campaign contributions from individuals who work for auto manufacturers (total, as of 2002). Use this dataset to visualize the relationship between contributions ($x$) and the Senators' votes ($y$). You can emulate the graphic in this document (I discuss helpful tips below), or you can put your own spin on how you want to visualize the information. Ensure that your graphic looks professional. For example, use informative labels instead of the _blah_ variable names from the dataset.
 
 
 ```{r include = FALSE, echo = FALSE}

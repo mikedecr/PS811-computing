@@ -330,9 +330,7 @@ ggplot(house_means) +
   ) +
   scale_color_brewer(palette = "Set2")
 
-# other packages containing color palettes:
-# {ggthemes}, {ggthemr}, {wesanderson} (yes, really)
-# colorblind safe include {scico}, {viridis}, and more
+# see below for packages containing more colors!
 
 
 # supply colors manually with scale_color_manual()
@@ -478,6 +476,24 @@ ggplot(this_congress) +
 # packages for themes: ggthemes, ggthemr, ...
 # Modify existing themes and save as your own!
 
+
+# ---- other awesome tools for ggplot2 -----------------------
+
+# packages for enhancing ggplot2!
+# ggdag: draw DAGs (causal graphs) with tidy/ggplot-friendly tools
+# patchwork: combine ggplots into one plot
+# ggforce: superpowered enhacements (cool!)
+# ggpointdensity: color points according to estimated density
+# ggridges: smush lots of histograms/densities together
+# viridis: awesome colorblind-friendly color schemes
+# scico: more colorblind-friendly color schemes
+# wesanderson: movie-themed color palettes
+# ggthemes: more themes!
+# ggthemr: more themes!
+# tidybayes: geoms for Bayesian MCMC samples
+# GGally: helpful tools
+# latex2exp: type LaTeX math into graphics
+# and so much more!
 
 
 
