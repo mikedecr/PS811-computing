@@ -11,3 +11,5 @@ slides/*/*.html
 811-photo.pdf
 reading
 CAFE-full.csv
+assignments/*/*_cache
+assignments/*/*_files
