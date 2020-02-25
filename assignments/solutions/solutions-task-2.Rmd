@@ -1,0 +1,218 @@
+---
+title: |
+  | **SOLUTIONS** 
+  | Skill Task 2: Data manipulation (`dplyr`)
+author: "PS 811: Statistical Computing"
+date: |
+  | `r format(Sys.time(), "%B %d, %Y")`
+abstract: This document contains solutions for Skills Task 2. Although you were asked to submit a plain `.R` file, I am using `.Rmd` so I can provide more comments and interpretation of the assignment. 
+output: 
+  bookdown::pdf_document2:
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: true
+geometry: margin=1.25in
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+# latex packages follow:
+# - Linux Libertine for text and math fonts 
+# - Inconsolata for code
+header-includes:
+  \usepackage{libertine}
+  \usepackage{libertinust1math}
+  \usepackage[varqu, scaled = 0.95]{zi4}
+---
+
+
+
+```{r chunks, include = FALSE}
+# show code and R output in the same code block
+# cache chunk results to prevent re-evaluation
+knitr::opts_chunk$set(
+  collapse = TRUE, 
+  cache = TRUE
+)
+```
+
+# Setup
+
+As always, I load my packages first.
+
+```{r packages, cache = FALSE, warning = FALSE, message = FALSE}
+library("here")
+library("tidyverse")
+```
+
+Import the data using `read_csv()` as before. I tend to import my raw data with an object name ending in `_raw`. This way, my revised data get the prettier name.
+
+Note also that I can use the logic of the pipe to build my file path with `here()` _and then_ pipe that path into `read_csv()`. This works exactly the same, but sometimes I do this to make the code look prettier. I can then pipe into `print()` to show me the results, which is something I _always_ do. 
+
+```{r read, message = FALSE}
+cafe_raw <- 
+  here("data", "CAFE.csv") %>%
+  read_csv() %>%
+  print()
+```
+
+# Investigate data
+
+```{r peek-data}
+names(cafe_raw)
+nrow(cafe_raw)
+ncol(cafe_raw)
+summary(cafe_raw)
+```
+
+# Did the bill pass: `count()`
+
+Supply a data frame and a variable name directly to `count()`. This is also one way (of many) to tabulate any variable to see what values it has. 
+
+```{r tabulating}
+count(cafe_raw, Vote)
+```
+
+Because the Yeas outnumber the Nays, it looks like the bill passed the Senate. 
+
+# New variables: `mutate()`
+
+Here is where I modify the dataset to its more "final form." This is where I give the result a new name that is prettier and easier to work with for the rest of my analysis. 
+
+Before we recode this variable, we can see what the existing values are, using `count()`. Let's look at the `Party_Code` variable, since we've already seen `Vote`.
+
+```{r count-party}
+count(cafe_raw, Party_Code)
+```
+
+There are `100`s (Democrats), `200`s (Republicans), and `328`s (Independents). We need to recode all of these.
+
+```{r new-vars}
+cafe <- cafe_raw %>%
+  mutate(
+    Party = case_when(Party_Code == 100 ~ "Democrat",
+                      Party_Code == 200 ~ "Republican",
+                      Party_Code == 328 ~ "Independent"),
+    Yea_Vote = case_when(Vote == "Yea" ~ 1,
+                         Vote == "Nay" ~ 0)
+  )
+```
+
+The `case_when()` function is like an "if...else..." statement, if you're familiar with that. You read it by saying "If `Party_Code` is 100, the result is `"Democrat"`," and so on.^[
+  The `case_when()` function is similar to `ifelse()`, which you may have seen in your previous R work. We prefer `case_when()` because it does the same thing but with more flexibility to match multiple conditions and multiple outputs, whereas `ifelse()` only does one thing at a time.
+]
+You can always check to see that R did what you want by using `count()` to compare the new and old variables.
+
+```{r count-compare}
+count(cafe, Vote, Yea_Vote)
+count(cafe, Party_Code, Party)
+```
+
+
+There are a few important workflow tips to point out here.
+
+1. You use an equals sign within `mutate()` to create a new variable. This is different from assigning entirely new objects in the general R workspace, where we use the assignment operator `<-`. 
+2. You can add however many variables you want to `mutate()`. Just separate each new variable declaration with a comma.
+2. If we didn't match a category using `case_when()`, for example if we left out the part about `328`, the result would default to `NA` for those cases. It often isn't wise to let R handle this choice for you by default, which is why it is important to investigate which values are in your data before you recode (e.g. using `count()`).
+3. In situations like this where you have a function _within_ `mutate()`, you need to make sure that you have closed all of your parentheses. 
+
+
+# Vote within Party
+
+With this new data, find out which party was more supportive of the bill. This is where we use `group_by()` and then pass the result directly to `summarize()`.
+
+First, I will demonstrate `summarize()` without grouping. Summarizing is different from adding new variables because we are _collapsing the data down_ into a data frame of summary statistics. Each result must be length 1 (a summary!). 
+
+```{r summary-ungroup}
+# I use the na.rm = TRUE argument
+#   in order to skip NAs, should there be any.
+summarize(
+  cafe, 
+  Prop_Yea = mean(Yea_Vote, na.rm = TRUE)
+)
+```
+
+The result is a data frame with a variable called `Prop_Yea`, containing the mean of the original `Yea_Vote` variable (which is the proportion of `1`s).
+
+To calculate this concept within party groups, use `group_by()` before `summarize()`. Instead of returning a one-row data frame, it will return a data frame that contains one row for each group.
+
+```{r group-sum}
+cafe %>%
+  group_by(Party) %>%
+  summarize(
+    Prop_Yea = mean(Yea_Vote, na.rm = TRUE)
+  )
+```
+
+Looks like Republicans were more supportive of the bill.
+
+It's possible that you didn't catch the trick that you can find the proportion of `1`s by calculating the mean. Instead you might have used `count()` or something. Here's how you might do that.
+
+```{r count-version}
+# note that the data are grouped by party,
+# so when you calculate prop, 
+# sum(n) is the sum of n WITHIN PARTY
+cafe %>%
+  group_by(Party) %>%
+  count(Vote) %>%
+  mutate(prop = n / sum(n))
+```
+
+
+# Bonus: co-voting
+
+How do we know if two Senators co-voted? We `Vote` variable would sum to $2$ (two Yeas) or $0$ (two Nays) within a state. States where the senators voted differently would only sum to $1$. So we can do this by grouping on state and then summing `Yea_Vote`.
+
+```{r naive-sum}
+cafe %>%
+  group_by(State) %>%
+  summarize(
+    sum_vote = sum(Yea_Vote)
+  ) 
+```
+
+If you did this approach, great. But you should know that this method can run into problems. Imagine a scenario where a senator died in office, and then the state is represented only by one senator. If the remaining senator voted Nay on the bill, the sum of `Yea_Vote` would be $0$. This can also happen if a state has two senators but one of the senators doesn't vote on the bill. If you calculate the sum without also checking that there were two votes, you might find the wrong answer. 
+
+This is an important thing to keep in mind about programming. There are often many ways to get the same answer _under specific assumptions_, but your answer can differ if the assumptions don't hold. It is often advisable to program your routine using the more rigorous approach as a way of guarding against violated assumptions in the future, should your data ever change, or should the method be applied in a different setting. 
+
+So here is how you can take a stricter approach. If the sum of `Yea_Vote` is $2$, we know that this means two Yea votes. However, we only know that a sum of $0$ means two Nay votes if we also check that two senators voted. The following approach checks all of those conditions.
+
+```{r better-bonus}
+cafe %>%
+  group_by(State) %>%
+  summarize(
+    sum_yea = sum(Yea_Vote),
+    sum_valid_votes = sum(Yea_Vote == 1 | Yea_Vote == 0)
+  ) 
+```
+
+The `sum_valid_votes` line says, sum the number of cases where `Yea_Vote` is `1` OR `Yea_Vote` is `0`. If this variable doesn't equal `2` for a state, then that state did not have two senators casting relevant votes.
+
+You could combine these methods into one variable that indicates co-voting.
+
+```{r covoting}
+# the sum of yea_vote is either 2 or 0 (using the | symbol for "or"), 
+# AND (&) the number of Yeas or Nays (|) for a state must be 2
+state_covotes <- cafe %>%
+  group_by(State) %>%
+  summarize(
+    co_vote = 
+      (sum(Yea_Vote) == 2 | sum(Yea_Vote) == 0) &
+      (sum(Yea_Vote == 1 | Yea_Vote == 0) == 2)
+  ) %>%
+  print()
+```
+
+The result is a logical variable, so it is either `TRUE` or `FALSE`. You can always convert a logical into a number, and logicals actually behave exactly like `1`s and `0`s.
+
+```{r logical-fun}
+as.numeric(TRUE)
+sum(c(TRUE, TRUE, FALSE))
+mean(c(TRUE, FALSE))
+```
+
+
+
+
