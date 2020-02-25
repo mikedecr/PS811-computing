@@ -1,0 +1,111 @@
+---
+title: |
+  | **SOLUTIONS** 
+  | Skill Task 1: Rmd, `here()`
+author: "PS 811: Statistical Computing"
+date: |
+  | `r format(Sys.time(), "%B %d, %Y")`
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+geometry: margin=1.25in
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+# latex packages follow:
+# - Linux Libertine for text and math fonts 
+# - Inconsolata for code
+header-includes:
+  \usepackage{libertine}
+  \usepackage{libertinust1math}
+  \usepackage[varqu, scaled = 0.95]{zi4}
+---
+
+
+<!-- Hi! I am a Markdown comment. -->
+
+<!-- 
+You can break a markdown comment
+across
+multiple lines
+ -->
+
+
+```{r chunks, include = FALSE}
+# show code and R output in the same code block
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+
+
+# Setup
+
+In this class, we take advantage of RStudio's "Project" capabilities. We open an R project by opening the `.Rproj` file for a project, or opening the desired project from within RStudio. 
+
+When you work within an R project, R's working directory should automatically be set to the project "root," a.k.a.\ the top of the project folder. You can check this using the `here` package, which gives you feedback about its behavior when you load it.
+
+```{r load-here}
+library("here")
+```
+
+If this does print your project directory, two things could have gone wrong: (1), you aren't working in your RStudio project, or (2) you have not given your project an `.Rproj` file.
+
+
+# Basic R commands
+
+I create a code chunk that saves two variables, `first` and `last`.^[
+  If you open the `.Rmd` file for this document, you will notice that I have _named_ these code chunks. Names are helpful to keep yourself organized, and they can come in handy when debugging an R Markdown document that fails to compile successfully. 
+]
+
+
+```{r save-name}
+first <- "Michael"
+last <- "DeCrescenzo"
+```
+
+I now use the `c()` function to combine my first and last name into one vector. The `c()` function is ubiquitous in R. Any time you need to supply a _series of values_ to a function argument, for example, you can create that series (a.k.a.\ vector) using `c()`.
+
+```{r combine-name}
+c(first, last)
+```
+
+# Import data
+
+Now I import the `CAFE` data into R. I need to load the `tidyverse` package to get the `read_csv()` function.^[
+  You should be aware that `read_csv()`, a function contained within `tidyverse`, is different from `read.csv()`, a function that R has by default. We will generally prefer reading functions whose names have _underscores_, so be mindful.
+]
+
+```{r load-tidy}
+library("tidyverse")
+```
+
+When you load the `tidyverse` package, it will loudly tell you a few things. First, because `tidyverse` is technically a bundle of packages, it tells you that several packages have actually been loaded. They are:
+
+- `readr`: data import/export functions. Technically this is where `read_csv()` lives! 
+- `tibble`: improves the behaviors of data frames in R. [Learn more.](https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html)
+- `dplyr`: data manipulation functions. We've seen this already!
+- `ggplot2`: graphics. We've also seen this!
+- `tidyr`: a package for data reshaping. This package is an update to other packages that you may have seen before, `reshape` and `reshape2`. We will explore this soon!
+- `stringr` and `forcats`: two packages that provide helpful functions for working with character strings and factor data. We will also explore this soon!
+- `purrr`: tools for working with lists, list-columns, and nested data. If this sounds like "wtf" stuff, that's because it's advanced. But buckle up because we're going to dive in at the end of the semester.
+
+There is also a message that tells you that functions have been "masked." What this means is that there are functions within `tidyverse` packages that have the same names as other R functions, and so the new functions are prioritized over the old functions. Never fear; you can always access a masked function by typing `package_name::function_name()`.
+
+Now I read the data using `read_csv()`, which requires a path to the file that we want to import. We use `here()` to build the path, so we call `here()` within `read_csv()`. The functions are evaluated inside out, so `here()` builds the path, and then `read_csv()` uses the path to import the data. Note that I also pipe into `print()`, which lets me look at the results even as I store the data in the object named `cafe`.
+
+```{r read-data}
+cafe <- 
+  read_csv(here("data", "CAFE.csv")) %>%
+  print()
+```
+
+Reading data with `read_csv()` (and other `tidyverse`-style `read_*()` functions) will also print a noisy message. It isn't an error. It's telling you how the data were interpreted by `read_csv()`. It's saying, "I made a variable called 'Senator' that is a character (string) variable..." and so on. These are inferences that the function is making about the data, but it's possible to modify this inferential behavior in advanced applications.
+
+If your code looks like mine, and the document builds ("knits") to PDF, then you did great! 
+
