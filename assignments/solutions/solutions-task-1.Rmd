@@ -7,7 +7,6 @@ date: |
   | `r format(Sys.time(), "%B %d, %Y")`
 output: 
   bookdown::pdf_document2:
-    keep_tex: true
     fig_caption: yes
     latex_engine: pdflatex
     toc: false
@@ -59,10 +58,7 @@ If this does print your project directory, two things could have gone wrong: (1)
 
 # Basic R commands
 
-I create a code chunk that saves two variables, `first` and `last`.^[
-  If you open the `.Rmd` file for this document, you will notice that I have _named_ these code chunks. Names are helpful to keep yourself organized, and they can come in handy when debugging an R Markdown document that fails to compile successfully. 
-]
-
+I create a code chunk that saves two variables, `first` and `last`.
 
 ```{r save-name}
 first <- "Michael"
@@ -97,7 +93,21 @@ When you load the `tidyverse` package, it will loudly tell you a few things. Fir
 
 There is also a message that tells you that functions have been "masked." What this means is that there are functions within `tidyverse` packages that have the same names as other R functions, and so the new functions are prioritized over the old functions. Never fear; you can always access a masked function by typing `package_name::function_name()`.
 
-Now I read the data using `read_csv()`, which requires a path to the file that we want to import. We use `here()` to build the path, so we call `here()` within `read_csv()`. The functions are evaluated inside out, so `here()` builds the path, and then `read_csv()` uses the path to import the data. Note that I also pipe into `print()`, which lets me look at the results even as I store the data in the object named `cafe`.
+Now I read the data using `read_csv()`, which requires a path to the file that we want to import. We can always check that our dataset is where it's supposed to be by using R to look within our data folder. You can print folder contents (file names and folder names) using `list.files()`.^[
+  If you find yourself in a situation where data import isn't working, you can use `list.files()` to check your assumptions. Sometimes you mistype little things, so you can even copy and paste the output to ensure that everything is spelled correctly.
+]
+
+
+
+```{r list-files}
+# print the contents of the project folder
+list.files(here())
+
+# print the contents of the data folder
+list.files(here("data"))
+```
+
+We use `here()` to build the path, so we call `here()` within `read_csv()`. The functions are evaluated inside out, so `here()` builds the path, and then `read_csv()` uses the path to import the data. Note that I also pipe into `print()`, which lets me look at the results even as I store the data in the object named `cafe`.
 
 ```{r read-data}
 cafe <- 
