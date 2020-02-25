@@ -34,7 +34,8 @@ library("tidylog")  # first time: install.packages("tidylog")
 
 # ---- read data into R -----------------------
 
-# federal_raw <- 
+federal_raw <- read_csv(here("data", "HSall_members.csv")) %>% 
+  print()
 
 
 
@@ -77,10 +78,17 @@ congress <- federal_raw %>%
 
 
 # This contains Republicans and Democrats from all congresses.
+
+
 # Save only the current congress 
 
 # try here --------- 
 
+congress %>% count(congress)
+
+this_congress <- congress %>% 
+  filter(congress == max(congress)) %>% 
+  print()
 
 # ---------
 
@@ -106,7 +114,13 @@ congress_means <- congress %>%
 
 # save separate datasets for House and Senate
 # ----
+house_means <- congress_means %>% 
+  filter(chamber == "House") %>% 
+  print()
 
+senate_means <- congress_means %>% 
+  filter(chamber == "Senate") %>% 
+  print()
 
 
 # ----
@@ -123,12 +137,36 @@ congress_means <- congress %>%
 
 # this_congress: scatter nominate_dim1 and nominate_dim2
 
+ggplot(this_congress) +
+  aes(
+    x = nominate_dim1, y = nominate_dim2,
+    color = party
+  ) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(
+    method = "lm", se = FALSE,
+    aes(group = party), color = "black"
+  ) +
+  scale_color_manual(
+    values = c("Democrat" = "dodgerblue", 
+               "Republican" = "tomato")
+  ) +
+  scale_x_continuous(
+    breaks = seq(from = -0.5, to = 0.5, by = .5),
+    labels = c("Liberal", "Moderate", "Conservative")
+  ) +
+  labs(
+    x = "NOMINATE, First Dimension",
+    y = "NOMINATE, Second Dimension",
+    color = NULL,
+    title = "Ideology in Congress",
+    subtitle = "Comparison of D1 and D2 NOMINATE"
+  ) +
+  coord_cartesian(xlim = c(-1, 1), ylim = c(-1, 1)) +
+  facet_wrap(~ chamber + party)
 
 
-
-
-
-
+help(geom_point)
 
 # NOTES:
 # - all plots have data, aes(), geoms,       
