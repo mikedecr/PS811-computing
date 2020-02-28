@@ -1,0 +1,546 @@
+---
+title: "Regression"
+subtitle: ""
+author: ""
+date: ""
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    selfcontained: true
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_SVG"
+    # css: "kunoichi"
+    css: xaringan-themer.css
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "https://platform.twitter.com/widgets.js"
+# bibliography: ../../paper-rmd/assets/voter-id-bib.bib
+# biblio-style: ../../paper-rmd/assets/apsr-leeper.bst
+---
+
+class: middle, center
+
+
+```{r setup-rmd, include = FALSE, cache = FALSE}
+source(here::here("code", "assets", "slide-helpers.R"))
+```
+
+```{r inf, include = FALSE, cache = FALSE, eval = FALSE}
+xaringan::inf_mr(here::here("slides", "04_regression", "04_regression.rmd"))
+# servr::daemon_stop(1)
+```
+
+
+.pull-left[
+# **PS 811: Statistical Computing**
+
+<br>
+Michael DeCrescenzo
+<br>
+University of Wisconsin–Madison
+
+]
+
+.pull-right[
+```{r, include = TRUE, fig.width = 4, fig.height = 3, out.width = "100%"}
+tibble(
+  x = seq(0, 1, .01)
+) %>%
+  crossing(b = seq(1, 10, length.out = 5)) %>%
+  mutate(dbeta = dbeta(x, 3, b)) %>%
+  ggplot() +
+  aes(
+    x = x, 
+    y = dbeta, 
+    color = as.factor(b), 
+    fill = as.factor(b)
+  ) +
+  geom_line() +
+  geom_ribbon(
+    aes(ymin = 0, ymax = dbeta),
+    color = NA,
+    alpha = 0.2
+  ) +
+  viridis::scale_fill_viridis(discrete = TRUE, end = 0.9) +
+  viridis::scale_color_viridis(discrete = TRUE, end = 0.9) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+    panel.border = element_blank(),
+    panel.background = element_blank()
+  ) 
+```
+
+]
+
+## Regression and Model Output
+
+February 28, 2020
+
+---
+
+class: middle
+
+.pull-left[
+# Goals
+
+1. Estimating common regressions models
+
+2. Understanding/visualizing model output
+
+3. Generating "post-estimation" quantities
+]
+
+
+
+--
+
+.pull-right[
+# Translated
+
+1. Estimating parameters
+
+2. Visualizing parameters
+
+3. _Functions of_ parameters
+
+]
+
+---
+
+class: inverse, middle, center
+
+## In your code-along file...
+
+
+---
+
+# Packages we have worked with
+
+.pull-left[
+
+```{r cache = FALSE, include = TRUE, results = 'hide', echo = TRUE}
+library("here") 
+library("tidyverse")
+library("broom")
+```
+
+]
+
+.pull-right[
+
+**here**: manage file pathways safely
+
+**tidyverse**: bottomless pit of tools for data manipulation/graphics
+
+**broom**: turning model output into _data frames_
+
+]
+
+--
+
+.center[
+<br>
+
+### (special appearances by other packages)
+]
+
+
+---
+
+# New data on Canvas
+
+```{r,  echo = TRUE, include = TRUE, results = 'hide'}
+house <- 
+  here("data", "house-elections.csv") %>%
+  read_csv() %>% 
+  print()
+```
+
+--
+
+.pull-left[
+
+Data on House members since 1900s
+
+- NOMINATE score from -1 (most liberal) to +1 (most conservative)
+- (new) Previous **House** vote outcome in their district
+- (new) Previous **presidential** vote outcome in their district
+]
+
+
+--
+
+.pull-right[
+Vote outcomes measured as Republican share of the **"two-party vote"**
+
+\begin{align}
+  \text{Rep. share} &= \frac{\text{Rep. Votes}}{\text{Rep. Votes} + \text{Dem. Votes}} 
+\end{align}
+<!--  -->
+]
+
+
+
+---
+
+# $y_{i} = \alpha + \beta x_{i} + \epsilon_{i}$
+
+`lm()` for linear model
+
+```{r include = TRUE, echo = TRUE, results = "hide"}
+# lm(formula = y ~ x, data = data_name)
+simple_reg <- lm(nominate_dim1 ~ rep_share_house, data = house)
+```
+
+--
+
+```{r include = TRUE, echo = FALSE}
+simple_reg
+```
+
+
+---
+
+# Why `broom`?
+
+.pull-left[
+
+The old way: 
+
+- `summary(model)`
+
+- `confint(model)`
+
+- `predict(model, interval = "confidence")`
+
+- Works, but clunky. Must covert to other object classes to make useful
+
+]
+
+--
+
+
+.pull-right[
+
+The cool way: the `{broom}` package
+
+- does all of the conversion for you
+
+- results are **data frames**
+
+- natural compatibility with `{tidyverse}`
+
+]
+
+
+---
+
+# `broom::tidy()`
+
+Summarizes the model at the **variable level** (coefficients, std. error, $p$-value)
+
+```{r include = TRUE, echo = TRUE, results = "hide"}
+tidy(simple_reg)
+```
+
+--
+
+```{r include = TRUE, echo = FALSE}
+tidy(simple_reg)
+```
+
+
+---
+
+
+# `broom::glance()`
+
+Summarizes the model at the **model level** ( $R^{2}$, $\sigma$, $F$, DFs)
+
+```{r include = TRUE, echo = TRUE, results = "hide"}
+glance(simple_reg)
+```
+
+--
+
+```{r include = TRUE, echo = FALSE}
+glance(simple_reg)
+```
+
+
+
+---
+
+# `broom::augment()`
+
+Summarizes the model at the **observation level** ( $x_{i}$, $y_{i}$, conditional mean, residuals)
+
+```{r include = TRUE, echo = TRUE, results = "hide"}
+augment(simple_reg)
+```
+
+--
+
+```{r include = TRUE, echo = FALSE}
+augment(simple_reg)
+```
+
+
+---
+
+# Plot residuals
+
+.pull-left[
+
+```{r rvf, include = TRUE, echo = TRUE, results = "hide", fig.show = 'hide'}
+augment(simple_reg) %>%
+  ggplot() +
+  aes(x = rep_share_house, 
+      y = .resid) +
+  geom_point()
+```
+
+]
+
+.pull-right[
+
+```{r rvf, include = TRUE, fig.width = 4, fig.height = 3, out.width = "100%"}
+```
+
+]
+
+
+
+---
+
+# Multiple regression
+
+$Y = X\boldsymbol{\mathbf{\beta}} + \mathbf{E} \qquad$ or $\qquad y_{i} = \mathbf{x}_{i}^{\intercal}\boldsymbol{\mathbf{\beta}} + \epsilon_{i}$
+
+```{r multi, include = TRUE, echo = TRUE, results = "hide"}
+# also note PIPE INTO NON-FIRST ARGUMENT
+# use `.` to stand-in for data
+multi_mod <- house %>%
+  lm(nominate_dim1 ~ rep_share_house + republican, data = .)
+
+tidy(multi_mod)
+```
+
+--
+
+```{r multi, include = TRUE}
+```
+
+
+
+
+---
+
+# See notes for how-tos
+
+.pull-left[
+
+Model formula tricks:
+
+- Suppress the constant/intercept
+
+- convert categories to indicator variables
+
+]
+
+--
+
+.pull-right[
+
+Other types of models:
+
+- general linear models (e.g. logistic model)
+
+- heteroskedasticity-consistent (a.k.a. "robust") standard errors
+
+]
+
+
+---
+
+# Coefficient plot. Estimate, tidy, plot
+
+```{r}
+filter <- dplyr::filter
+```
+
+```{r coef-data, include = TRUE, echo = TRUE}
+bigger_tidy <- house %>%
+  filter(election_year >= 2000) %>%
+  lm(formula = nominate_dim1 ~ scale(rep_share_house) +
+               scale(rep_share_pres) + republican +
+               as.factor(election_year), 
+     data = .) %>%
+  tidy(conf.int = TRUE) %>%
+  print() 
+```
+
+---
+
+
+```{r coefs, include = TRUE, echo = TRUE, out.width = "100%", fig.width = 8, fig.height = 3}
+ggplot(bigger_tidy) +
+  aes(x = term, y = estimate) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
+  geom_hline(yintercept = 0) +
+  coord_flip()
+```
+
+---
+
+# Why figures?
+
+- easier to see than to read
+
+- combine many models in same figure (stack data frames with `bind_rows`)
+
+- easy to get a sense of scale
+
+- less stargazing (magnitude ≠ significance)
+
+- plot effect sizes rather than coefficients
+
+
+
+
+---
+
+
+.pull-left[
+# Tabular output
+
+- Save time/effort
+- Prevent _transcription errors_
+- Update automatically
+
+```{r htmlreg, include = TRUE, echo = TRUE, results = "hide"}
+texreg::htmlreg(
+  multi_mod, 
+  doctype = FALSE,
+  caption = "TeXreg Demo"
+)
+```
+
+See notes for more
+
+]
+
+.pull-right[
+
+```{r htmlreg, include = TRUE, echo = FALSE, results = "asis"}
+```
+]
+
+
+---
+
+
+.pull-left[
+
+# Predictions
+
+- `augment()` takes `newdata = ` argument
+- supply custom data to make predictions for
+- make a data frame with `tibble` or `tribble`
+- trick: use `crossing()`
+
+]
+
+--
+
+.pull-right[
+
+```{r, include = TRUE, echo = TRUE}
+pred_data <- 
+  crossing(
+    rep_share_house = 0:100,
+    republican = c(0, 1)
+  ) %>%
+  print()
+```
+
+]
+
+---
+
+# Pass new data to augment
+
+```{r include = TRUE, echo = TRUE}
+augment(multi_mod, newdata = pred_data)
+```
+
+
+---
+
+# Make confidence intervals
+
+```{r include = TRUE, echo = TRUE}
+predictions <- 
+  augment(multi_mod, newdata = pred_data) %>%
+  mutate(
+    conf.low = .fitted - (.se.fit * 1.96), # should use residual DFs
+    conf.high = .fitted + (.se.fit * 1.96) # from glance() results
+  ) %>%                                    # to get t statistic
+  print()
+```
+
+---
+
+
+# Plot predictions
+
+.pull-left[
+
+```{r plot-aug, include = TRUE, echo = TRUE, fig.show = "hide"} 
+ggplot(predictions) +
+  aes(x = rep_share_house, y = .fitted, 
+      fill = as.factor(republican)) +
+  geom_ribbon(
+    aes(ymin = conf.low, ymax = conf.high),
+    color = NA, alpha = 0.25
+  ) +
+  geom_line() +
+  theme(legend.position = "none") +
+  scale_fill_manual(
+    values = c("0" = "dodgerblue", "1" = "tomato")
+  )
+```
+]
+
+.pull-right[
+```{r plot-aug, include = TRUE, fig.width = 4, fig.height = 3, out.width = "100%"}
+```
+]
+
+---
+
+class: center
+
+# Closing notes on regression
+
+**There is no one path** through regression in R.
+
+**What `broom` gives us** is tools that simplify our workflow
+
+**`glance()` and `tidy()`** will last, but **you will outgrow `augment()`** if you need more complicated post-estimation quantities
+
+**See the notes** for ideas on where to look next
+
+**No substitute for knowing the statistics** even if packages help with the details
+
+
+
+
+

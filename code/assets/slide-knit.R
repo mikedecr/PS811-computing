@@ -25,7 +25,7 @@ mono_light(
   # header_font_google = google_font("Roboto"),
   header_font_google = google_font("Source Sans Pro"),
   text_font_google = google_font("Source Serif Pro"), 
-  code_font_google = google_font("Inconsolata"), 
+  code_font_google = google_font("Fira Code"), 
   text_bold_color = secondary,
   # code_inline_background_color    = "#F5F5F5", 
   # table_row_even_background_color = "white", 
@@ -44,7 +44,7 @@ mono_light(
       "font-style" = "normal", "font-weight" = "normal"
     ),
     ".remark-slide-content" = list(
-      "font-size" = "24px"
+      "font-size" = "26px"
     ),
     ".remark-slide-number" = list(
       "display" = "none"
