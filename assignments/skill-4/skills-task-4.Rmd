@@ -1,0 +1,151 @@
+---
+title: |
+  | **Skill Task 4** 
+  | Regression
+author: "PS 811: Statistical Computing"
+date: "Due March 6, 2020"
+# fonts:
+#   - package: MinionPro
+#     options: lf, mathtabular, minionint
+#   - package: FiraSans
+#     options: scaled = 0.9
+#   - package: zi4
+#     options: varqu, scaled = 0.95
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+    # highlight: kate
+geometry: margin=1.25in
+# compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes:
+  \usepackage[lf, mathtabular, minionint]{MinionPro} 
+  \usepackage[scaled = 0.9]{FiraSans} 
+  \usepackage[varqu, scaled = 0.95]{zi4}
+  \usepackage[small, bf]{titlesec} 
+---
+
+```{r cache = FALSE, echo = FALSE, include = FALSE}
+library("here")
+library("tidyverse")
+library("broom")
+```
+
+
+```{r include = FALSE}
+cafe <- read_csv(here("data", "cafe.csv")) %>%
+  mutate(
+    rep_caucus = case_when(
+      Party_Code == 200 ~ 1,
+      Party_Code %in% c(100, 328) ~ 0
+    ),
+    yea_vote = case_when(
+      Vote == "Yea" ~ 1,
+      Vote == "Nay" ~ 0
+    )
+  ) %>%
+  print()
+```
+
+
+Using the CAFE data, estimate the proportion of each party caucus that voted Yea on the auto emissions bill with regression. Set up your data by creating a binary `rep_caucus` variable that equals 1 for the Republican Caucus and 0 otherwise, and a binary `yea_vote` variable that gets 1 for Yeas and 0 for Nays (like we did for Skills Task 3).
+
+1. Use `group_by()` and `summarize()` to estimate the proportion of `Yea`s in each party caucus, similar to Skills Task 2. This gets you a point estimate only. Your result should look like the following:
+
+```{r echo = FALSE}
+cafe %>%
+  group_by(rep_caucus) %>%
+  summarize(
+    prop_yea = mean(yea_vote, na.rm = TRUE)
+  ) 
+```
+
+2. Use `lm()` to estimate a regression model where `yea_vote` is predicted by `rep_caucus`,
+\begin{align}
+  \mathtt{yea\_vote}_i = \alpha + \beta (\mathtt{rep\_caucus}_{i}) + \varepsilon_{i}
+\end{align}
+where $i$ indexes Senators, $\alpha$ is the intercept, and $\beta$ is the coefficient for being in the Republican caucus. Create a data frame of coefficients using `broom::tidy()`. Your results should appear as below. What do you notice about the coefficients compared to the proportions estimated in question 1?
+
+```{r echo = FALSE}
+ols <- lm(yea_vote ~ rep_caucus, data = cafe)
+
+tidy(ols, conf.int = TRUE)
+```
+
+3. Generate predicted values for a generic Republican and Democratic Caucus member. Use `broom::augment()` to generate the predictions, supplying a new dataset to the `newdata` argument. It is sufficient for the data you supply to `newdata` to contain two rows only: one Democrat (`rep_caucus` is `0`) and one Republican (`rep_caucus` is `1`). Results should appear as below. What do you notice about these predictions vs.\ the proportions estimated in question 1?
+
+```{r echo = FALSE}
+augment(ols, newdata = tibble(rep_caucus = c(0, 1)))
+```
+
+
+
+4. **BONUS:** Generate your predicted values with 95 percent uncertainty intervals. The notes describe how to make uncertainty intervals from `augment()`. Since there are fewer than 100 observations total, don't use the Normal critical value (1.96). Instead, use the appropriate $t$-value, since this is coming from an OLS model. How do you do that? Supposing that my simple model were called `ols`, I would find the critical value of $t$ such that the CDF at $t$ is 0.975, with the degrees of freedom equal to the residual degrees of freedom from my estimated model.
+
+```{r}
+# "qt" as in, quantile function of the t distribution
+critical_t <- qt(p = .975, df = glance(ols)$df.residual)
+```
+
+```{r include = FALSE}
+ols_preds <- augment(ols, newdata = tibble(rep_caucus = c(0, 1))) %>%
+  mutate(
+    conf.low = .fitted - (.se.fit * critical_t),
+    conf.high = .fitted + (.se.fit * critical_t)
+  ) %>%
+  print()
+```
+
+5. **SUPER BONUS:** When using a linear model to measure the different in means, we should probably be using heteroskedasticity-consistent errors. Try the above tasks with robust standard errors instead of a conventional standard error, and then plot your estimates and confidence intervals using `geom_pointrange()`. You will encounter errors that begin when you try to `augment()` a model with robust errors. What do you do???
+
+```{r include = FALSE}
+rob_preds <- estimatr::lm_robust(yea_vote ~ rep_caucus, data = cafe) %>%
+  prediction::prediction(
+    data = tibble(rep_caucus = c(0, 1)),
+    interval = "confidence"
+  ) %>%
+  as_tibble() %>%
+  rename(
+    .fitted = fitted.fit,
+    conf.low = fitted.lwr,
+    conf.high = fitted.upr
+  ) %>%
+  print()
+```
+
+```{r, include = FALSE}
+bind_rows(
+  "Robust" = rob_preds,
+  "Conventional" = ols_preds,
+  .id = "s.e."
+) %>%
+  ggplot() +
+  aes(x = rep_caucus, y = .fitted, color = s.e.) +
+  geom_pointrange(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(width = -0.25)
+  ) +
+  coord_flip() +
+  scale_x_continuous(
+    breaks = c(0, 1),
+    labels = c("0" = "Democrats", "1" = "Republicans")
+  ) +
+  labs(
+    x = NULL, y = "Estimated Probability of \"Yea\"", 
+    color = "Standard Error",
+    title = "Comparison of Robust and Conventional Standard Errors"
+  ) +
+  theme_minimal()
+```
+
+
+
+
