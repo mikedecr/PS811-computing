@@ -1,0 +1,23 @@
+
+- OLS
+    - single variable
+        - estimate
+        - piping!
+        - tidy / summary
+        - glance
+    - multiple 
+        - add variables
+        - `as.factor()` behavior
+        - `I()` ?
+        - `scale()`
+- Output
+    - tables (demo `pander` but mention`knitr::kable` & `{kableExtra}`)
+        - You want something designed to work with Rmd
+        - don't use `{stargazer}`. Just don't.
+        - `{gt}` is new but I'm not familiar! 
+        - `xtable`
+    - figures are often more efficient
+        - you wonder why I don't know much about tables
+- Predictions
+    - augment()
+    - `tibble()` and `tribble()`
