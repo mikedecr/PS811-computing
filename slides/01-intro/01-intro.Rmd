@@ -54,9 +54,9 @@ tibble(
   mutate(dbeta = dbeta(x, 3, b)) %>%
   ggplot() +
   aes(
-    x = x, 
-    y = dbeta, 
-    color = as.factor(b), 
+    x = x,
+    y = dbeta,
+    color = as.factor(b),
     fill = as.factor(b)
   ) +
   geom_line() +
@@ -74,7 +74,7 @@ tibble(
     legend.position = "none",
     panel.border = element_blank(),
     panel.background = element_blank()
-  ) 
+  )
 ```
 
 ]
@@ -228,6 +228,3 @@ Other things to check
     - Rstudio
     - Git
     - Sourcetre
-
-
-
