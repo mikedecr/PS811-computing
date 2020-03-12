@@ -10,6 +10,12 @@ library("broom")
 
 # ---- read data -----------------------
 
+
+# NOMINATE data
+nom_raw <- 
+  read_csv(here("data", "HSall_members.csv")) %>% 
+  print()
+
 # gary jacobson House elections data
 # (statedistrict-year level)
 gj_raw <- 
@@ -19,17 +25,16 @@ gj_raw <-
   ) %>%
   print()
 
-# NOMINATE data
-nom_raw <- 
-  read_csv(here("data", "HSall_members.csv")) %>% 
-  print()
 
 
 # ---- clean data for merge -----------------------
 
 # every statedist is 3 or 4 chars
-gj %>% count(nchar(statedist))
-gj %>% filter(str_detect(as.character(statedist), "00"))
+gj_raw %>% count(stcd)
+gj_raw %>% count(stcd) %>% print(n = nrow(.))
+gj_raw %>% count(nchar(stcd))
+
+# check codebook
 
 states_tab <- 
   tibble(
@@ -70,12 +75,12 @@ gj <- gj_raw %>%
 
 nom <- nom_raw %>%
   filter(chamber == "House") %>%
-  filter(party_code %in% c(100, 200)) %>%
+  # filter(party_code %in% c(100, 200)) %>%
   mutate(
     congress_year = 1787 + (congress * 2),
     election_year = congress_year - 1
   ) %>%
-  filter(election_year %in% c(gj$election_year)) %>%
+  # filter(election_year %in% c(gj$election_year)) %>%
   select(
     congress_year, election_year, 
     party_code,

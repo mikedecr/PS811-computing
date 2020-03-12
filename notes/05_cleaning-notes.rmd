@@ -1,0 +1,32 @@
+- Intro:
+    - no limit to the headaches you will encounter with real data, R or not.
+    - knowing what to do in R will help immensely
+    - last week we saw a new dataset. combination of ideology scores for Congress and election results.
+    - we're going to retrace my steps to making that, since it was a good example of many things that we want to do with data preparation
+- script
+    - open a blank script to code along with me. Since you can pause this video, there is no reason why you can't hack along with everything that I'm doing. 
+    - I will put my file online so you can have it as a reference, but if you are able to replicate everything in here, then maybe no need.
+- keyboard apology
+    - I work with a standing setup at home because of my back.
+    - try not to be obnoxious with it
+    - try not to talk while I'm typing
+    - may not do a great job of either, in which case I apologize now.
+- readxl package
+- read NOMINATE
+- read gary jacobson
+    - reading logical columns
+    - remember "inferences"
+    - column declaration
+    - guess_max
+    - assertions
+    - strings and factors
+- cleaning
+    - voteview: house, years, select
+    - GJ: state and district, variable names, 
+    - talk about strings and factors with parse_number() 
+- merging
+    - various joins
+
+
+
+
