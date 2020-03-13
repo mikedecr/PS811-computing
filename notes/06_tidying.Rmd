@@ -1,0 +1,315 @@
+
+- if you can split screen somehow, great
+- otherwise, better to watch my screen than to fudge on yours, since I will be giving away script
+
+- tidying
+    - data come in many forms
+    - what is "tidy" data
+        - each row is a case
+        - each column is a variable
+    - tidyr: package to take reshape data (make it tidy)
+- functions
+
+
+```{r}
+# ----------------------------------------------------
+#   PS 811: Lesson 6
+#   Data shaping (a.k.a. reshaping, a.k.a. tidying)
+#   and functions
+# ----------------------------------------------------
+
+# ---- packages -----------------------
+
+library("here")
+library("tidyverse")
+library("broom")
+
+
+
+# ---- new dataset -----------------------
+
+# votes in the 2000 term
+scotus_raw <- 
+  here("data", "Supreme-Court-2000.dta") %>%
+  haven::read_dta() %>%
+  print()
+
+
+
+# 43 cases
+# 1 = "liberal" vote. 2 = "conservative" vote.
+
+# why do we encounter data like this?
+# imagine a model to predict how justice i votes on case j
+# y_{ij} = f( x_{i}, z_{j} )
+
+
+# one way to represent a model like this mathematically 
+# is to imagine that Y is a matrix (or 2D array) 
+# with rows/columns that correspond to i/j
+
+
+# ---- tidy data -----------------------
+
+# what is it
+# why is it useful
+# https://vita.had.co.nz/papers/tidy-data.pdf
+
+
+
+
+
+# ---- "wide" and "long" data -----------------------
+
+
+# "long" vs. "wide" data
+
+# Pretend example w/ fake data
+# (Don't worry about the code...only the output)
+
+# a two-period, repeated-exposure experiment
+n <- 10
+
+# Wide data: repeated concepts across columns
+wide <- tibble(
+  id = 1:n,
+  treatment_1 = sample(c(0, 1), n, replace = TRUE),
+  treatment_2 = sample(c(0, 1), n, replace = TRUE),
+  outcome_1 = sample(c(0, 1), n, replace = TRUE),
+  outcome_2 = sample(c(0, 1), n, replace = TRUE)
+) %>%
+  print()
+
+
+# Long data: repeated concepts across rows
+long <- wide %>%
+  pivot_longer(
+    cols = c(-id),
+    names_to = c(".value", "time"),
+    names_sep = "_"
+  ) %>%
+  print()
+
+
+
+# https://github.com/mkearney/tidy-animated-verbs/blob/master/images/tidyr-spread-gather.gif
+
+# ---- comments!!!! -----------------------
+
+# long data tends to fit with the "tidy" idea better
+# but not always a universal rule, depending on the model.
+# sometimes you want to make a graphic where it makes sense
+#   to reshape just for the graphic.
+# you should always be thinking about your needs
+
+
+
+
+
+# ---- tidying operations -----------------------
+
+# making data longer :: gathering :: melting
+# making data wider  :: spreading :: casting
+
+scotus_tidy <- scotus_raw %>%
+  mutate(case = row_number()) %>%
+  pivot_longer(
+    cols = -case,
+    names_to = "justice",
+    values_to = "vote"
+  ) %>%
+  print()
+
+
+
+
+scotus_wide <- scotus_tidy %>%
+  pivot_wider(
+    names_from = case,
+    values_from = vote,
+    names_prefix = "case_"
+  ) %>%
+  print()
+
+
+
+
+# ---- advanced case: multiple columns -----------------------
+
+primaries <- 
+  here("data", "house-primaries-top-two.csv") %>%
+  read_csv() %>%
+  print()
+
+
+# if we wanted to calculate:
+# ideological "distance" between candidates
+# who won the primary
+
+primaries %>%
+  select(-cand_id) %>%
+  pivot_wider(
+    values_from = c(ideology_score, primary_vote),
+    names_from = contestant_id
+  )
+
+
+
+# ----------------------------------------------------
+#   Functions
+# ----------------------------------------------------
+
+
+# ---- anatomy of a function -----------------------
+
+# name, arguments, value
+# default arguments
+
+?mutate
+
+# what's the deal with "methods"
+# some function names are "generic," 
+#   meaning the same function name works for diff. object classes
+#   even though the results are kinda different
+# e.g. summary, print, old R functions like mean
+
+
+
+# ---- writing functions -----------------------
+
+# functions are objects
+
+# create a function like it's an object
+mean2 <- function()
+
+# it's common to be function(x)
+# but you can name arguments other things
+
+# what will the function do? in curly braces
+mean2 <- function(variable) {
+  sum(variable) / length(variable)
+} 
+
+
+mean2(c(1, 2, 3))
+
+
+
+
+# data frame considerations?
+
+
+
+
+# ---- rundown of cool functions -----------------------
+
+# coercing object types
+as.logical(1)
+as.factor(1)
+as.character(1)
+
+g <- 1
+
+str_glue("combining text with objects like {g}")
+as.character(str_glue("combining text with objects like {g}"))
+
+
+
+# ---- different function types -----------------------
+
+# prefix functions: mean(x)
+# infix functions: 1 + 2
+# replacement functions: attributes(data) <- [stuff]
+# "special" functions: if (...), for (...)
+# "functionals": functions that call other functions
+
+
+# demonstration of "control flow"
+if (2 + 2 == 4) {
+  print("math makes sense")
+} else {
+  print("what's going on")
+}
+
+
+# demonstration of "for loop"
+v <- vector()
+
+for (i in 1:10) {
+ v[i] <- i* 2
+}
+
+v
+
+# but we hate for loops
+
+
+
+# ---- functionals -----------------------
+
+# supplying name only 
+# (scale functions)
+
+apply(scotus_raw, MARGIN = 1, FUN = mean)
+apply(scotus_raw, MARGIN = 2, FUN = mean)
+
+# data frames are technically "lists"
+as.list(scotus_raw)
+
+lapply(scotus_raw, mean, na.rm = TRUE)
+
+# also sapply to "simplify"
+# vapply to return "vectors"
+# tapply for "ragged arrays" (works like group_by %>% summarize)
+# replicate: repeatedly apply 
+# mapply: multivariate apply
+
+scotus_tidy %>%
+  group_by(justice) %>%
+  summarize(
+    mean_liberal = mean(vote, na.rm = TRUE)
+  ) %>%
+  ggplot() +
+  aes(x = justice, y = mean_liberal) +
+  geom_col() +
+  scale_y_continuous(
+    breaks = seq(from = 0, to = 1, by = 0.1),
+    labels = scales::percent_format(accuracy = 1),
+    limits = c(0, 1)
+  ) +
+  coord_flip()
+
+# why c(0, 1) and not c(0, 100)?
+
+
+scotus %>%
+  mutate_all(
+    function(x) case_when(x == 0 ~ "Conservative", 
+                          x == 1 ~ "Liberal")
+  )
+
+scotus %>%
+  mutate_all(
+    ~ case_when(. == 0 ~ "Conservative",
+                . == 1 ~ "Liberal")
+  )
+
+
+# former is a function
+# latter is a "formula"
+lapply(scotus, 2, ~ mean(.))
+
+
+scotus_wide <- scotus_tidy %>%
+  mutate_at(
+    .vars = vars(-justice),
+    .funs = ~ case_when(
+      . == 0 ~ "Conservative", 
+      . == 1 ~ "Liberal"
+    )
+  )
+```
+
+
+
+
