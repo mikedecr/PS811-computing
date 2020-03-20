@@ -1,5 +1,31 @@
 # Introduction to Statistical Computing (Spring 2020)
 
+
+# Org
+
+- Class announcements
+    - plans for midterm/final (just make it all final oriented)
+- Emails/web
+    - Online links to lectures
+        - cleaning
+        - tidying
+    - Sharla/Navarro
+- create:
+    - rmd lecture
+    - rmd assignment: 
+        - make a project folder for a class paper (or some other fun side project, doesn't have to be big)
+        - begin the PDF
+        - write an abstract/rough outline of what you want the paper to include
+    - git lecture
+    - git assignment
+- Grade
+    - 1
+    - 2
+    - 3
+    - 4
+
+
+
 ## Schedule
 
 Essentials
