@@ -1,0 +1,66 @@
+---
+title: |
+  | **Final Project** 
+  | Pt. 1: Project Setup / R Markdown
+author: "PS 811: Statistical Computing"
+date: "Due April 3, 2020"
+# fonts:
+#   - package: MinionPro
+#     options: lf, mathtabular, minionint
+#   - package: FiraSans
+#     options: scaled = 0.9
+#   - package: zi4
+#     options: varqu, scaled = 0.95
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+    # highlight: kate
+geometry: margin=1.25in
+# compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes:
+  \usepackage[lf, mathtabular, minionint]{MinionPro} 
+  \usepackage[scaled = 0.9]{FiraSans} 
+  \usepackage[varqu, scaled = 0.95]{zi4}
+  \usepackage[small, bf]{titlesec} 
+---
+
+# The Final Project: Overview
+
+Throughout this class, we have been working within a "project-oriented workflow." Our code for this class has been contained within a single folder, we have used the `.Rproj` file to interface with the project, we have used the `{here}` package to set file paths within the project, and so on.
+
+For your final project, you will implement this project-oriented workflow for a separate project. This separate project could be a term paper for a different course, a separate research project, or something else. You will...
+
+- Create a project folder on your computer.
+- Organize the project folder in an principled way: for example, separate sub-folders for important files.
+- Analyze data with R.
+- Produce the written final product using R Markdown.
+- Track your project progress using `git`, publishing the project online using Github or a similar remote code repository service. 
+
+
+# Part 1: Project Setup and R Markdown
+
+ONLY PART 1 IS DUE NEXT WEEK.
+
+For the first part of the final project, you will begin your project folder on your computer, and create an R Markdown document to serve as a placeholder for your eventual written product.
+
+Your project folder:
+
+- Should be designed to contain _everything needed_ to create your project from start to finish. Obviously your code and your paper won't be written yes, but the design of the folder should aim to accommodate everything needed to run the project in a self-contained fashion. It should NOT exist within your folder for this course! It is a _separate folder_!
+- Should contain an `.Rproj` file. Your work in RStudio should take place within this separate project.
+- Should have separate folders for data, code, and so on. It's up to you whether you want to keep your written work inside of a `paper` or `writing` sub-folder. Sometimes I do this, and sometimes I don't. 
+- Should contain a simple `README.md` file with a short blurb about the project. This is MARKDOWN, not R Markdown. See an example [here](https://github.com/mikedecr/example-project/). 
+
+R Markdown document: 
+
+- Begin an R Markdown document that will eventually be your written final product.
+- For the time being, the only content in this `.Rmd` document can be a short (1-2 paragraph) statement about what you plan to do in the project. Tell me if it's going to be a paper for a different class, a little side project, or whatever you like. I just want you to be thinking about your goals for the project.
+
