@@ -9,7 +9,7 @@
     - Online links to lectures
         - cleaning
         - tidying
-    - Sharla/Navarro
+    - Sharla/Navarro (https://twitter.com/sharlagelfand/status/1240714865200762883)
 - create:
     - rmd lecture
     - rmd assignment: 

@@ -3,6 +3,8 @@
 .RData
 .Ruserdata
 assignments/*/*.tex
+code/*/*_cache
+code/*/*_files
 slides/*/*_cache
 slides/*/*_files
 slides/*/libs
@@ -20,3 +22,7 @@ lecture_720p.mov
 SupremeCourt.csv
 hall_house-primaries.dta
 broockman_female-candidates.dta
+*.aux
+07_Rmd-deep-dive.tex
+code/Rmd/07_rmd-deep-dive.docx
+code/Rmd/07_rmd-deep-dive.html

@@ -1,0 +1,26 @@
+% there are a few ways to include latex options.
+% 1: as a preamble file (like this one)
+% 2: directly into the header-includes YAML variable (global)
+% 3: output templates. For more info on templates,
+%    see <https://bookdown.org/yihui/rmarkdown/rticles-templates.html>
+%    and <https://bookdown.org/yihui/rmarkdown/rticles-usage.html>
+
+% These packages control the fonts used in PDF output.
+% The standard LaTeX engine (PDFLaTeX) has a limited selection of fonts.
+% See <https://www.tug.org/FontCatalogue/>
+
+\usepackage{libertine}                 % serif font
+\usepackage{libertinust1math}          % matching math font
+\usepackage[scaled = 0.95, varqu]{zi4} % teletype (monospace/code) font
+
+% The XeLaTeX engine gives you more control to specify fonts
+%   at the expense of having poorer typesetting principles
+%   (but xelatex typesetting is getting better)
+
+% this package enables decimal-aligned table columns
+\usepackage{dcolumn}
+
+% the default PDF template for R Markdown loads a lot of convenient packages
+% so you don't actually have to mess with them all that much.
+
+

@@ -1,0 +1,27 @@
+
+
+- YAML
+    - `header_includes`
+    - `includes`
+    - `template`
+- Chunks
+    - include
+    - results, echo, message, warning
+    - cache
+    - caching packages, other setup things
+- Inline R
+    - saving and recalling quantities
+    - scales
+    - english
+- Writing
+    - sections
+    - Figures 
+    - Tables
+    - inline math
+    - display math
+    - cross-references
+- Bibliography
+- Rendering output formats
+    - `rmarkdown::render()`
+    - `_output.yml`
+
