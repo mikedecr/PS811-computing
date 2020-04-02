@@ -9,6 +9,7 @@ knitr::opts_chunk$set(
   # cache.path = here::here("slides", "facebook", "facebook_cache/"),
   # fig.path = here::here("slides", "MPMC-2019", "MPMC_figs/"),
   dpi = 100, fig.retina = 3, 
+  fig.width = 6, fig.height = 4, out.width = "80%",
   fig.align = "center"
 )
 
