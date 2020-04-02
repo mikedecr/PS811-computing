@@ -51,6 +51,7 @@ output:
     toc: true
 ---
 
+
 # Overview
 
 ## The Main Ideas
@@ -125,9 +126,12 @@ library("broom")
 library("scales")  # useful for writing markdown
 ```
 
+
+
 Chunks can be named. Naming chunks is helpful for keeping yourself organized. More importantly, chunk names help you debug code after you hit a compilation error, since R will tell you that it encountered errors within a certain chunk. The chunk above is named `packages`. 
 
 RStudio contains helpful buttons to create code chunks, run all of the code within a chunk, run all chunks up to this point in the file, and so on. I would also advise that you learn the keyboard shortcuts to work with code chunks! 
+
 
 
 ### Chunk Options
@@ -186,7 +190,7 @@ here()
 
 The other way to include R code is using _inline_ commands. An inline command includes R output directly in the text. For example, I can use code to say that the dataset we imported contains `r nrow(prims)` observations and `r ncol(prims)` variables.
 
-Why is this helpful? This cuts down on the number of numerical errors that I would otherwise make by trying to transcribe results from R into my paper. I don't have to copy and paste any numbers to tell you that this dataset covers elections between `r min(prims$year)` and `r max(prims$year)`, or that the mean of the dependent variable in the analysis below (to two decimal places) is precisely $`r number(mean(prims$dv), accuracy = .01)`$.^[
+Why is this helpful? This cuts down on the number of numerical errors that I would otherwise make by trying to transcribe results from R into my paper [as discussed in @bakker-wicherts:2011:misreporting-stats]. I don't have to copy and paste any numbers to tell you that this dataset covers elections between `r min(prims$year)` and `r max(prims$year)`, or that the mean of the dependent variable in the analysis below (to two decimal places) is precisely $`r number(mean(prims$dv), accuracy = .01)`$.^[
   This last example shows how I can even include R code inside of $\text{\LaTeX}$ math.
 ]
 
