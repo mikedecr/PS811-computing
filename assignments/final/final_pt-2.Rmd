@@ -1,0 +1,51 @@
+---
+title: |
+  | **Final Project** 
+  | Pt. 2: Set Up Your Git Repository
+author: "PS 811: Statistical Computing"
+date: "Due April 10, 2020"
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+    # highlight: kate
+geometry: margin=1.25in
+# compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes:
+  \usepackage[lf, mathtabular, minionint]{MinionPro} 
+  \usepackage[scaled = 0.9]{FiraSans} 
+  \usepackage[varqu, scaled = 0.95]{zi4}
+  \usepackage[small, bf]{titlesec} 
+---
+
+# Context/Looking Forward
+
+Your final project is simply a project that you are doing for another class, only I care about the _process_ (the code, project organization, workflow...) rather than the _scholarly result_.
+
+Your final submission for this course (due in May) will be the _project directory/repository_ for the project of your choosing. It will be the whole folder on your computer that contains your analysis code, your writing, and so on.
+
+You will eventually submit this project to me _as a Github repository_ (or another remote code repository service), so let's begin that process.
+
+
+# Part 2: Begin Git Repository & Push to Remote
+
+For this part of the final, begin your local repository and push it to remote.
+
+1. Initialize your local repository using Sourcetree.
+2. Perform an "initial commit" to begin the Git history. This can be a commit or your `.Rproj` file, for example. **Do not yet commit any datasets until the April 10 lecture,** since datasets pose potential problems.
+3. Create a `README.md` in the project root and give it a one or two-sentence overview of the project (for now).^[
+  Or you may just copy/adapt the "proposal" material out of your Rmd document and put it in the README. Eventually your README file can be as simple or elaborate as you find appropriate. The README file is the project overview/description that displays on a Github repository.
+]
+4. For Part 1 of the final, you should have written a few sentences in an R Markdown document previewing your intended project. Commit that Rmd document in its current form (and the PDF if you wish). Future changes to this Rmd will be tracked by Git, so you can track those changes as you write the paper!
+5. Create an online repository for your project on Github. Use Sourcetree to link the remote repository to your local repository setup.
+6. Push your local repository to remote. This will put your committed files online. Non-committed files won't appear online until you commit them and then push the new changes.
+
+To "submit" this assignment, simply [email me](mailto:decrescenzo@wisc.edu) the Github URL (web address) to your remote repository!
