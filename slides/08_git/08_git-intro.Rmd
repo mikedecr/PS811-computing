@@ -1,0 +1,489 @@
+---
+title: "Git Introduction"
+subtitle: ""
+author: ""
+date: ""
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    selfcontained: true
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_SVG"
+    # css: "kunoichi"
+    css: xaringan-themer.css
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "https://platform.twitter.com/widgets.js"
+# bibliography: ../../paper-rmd/assets/voter-id-bib.bib
+# biblio-style: ../../paper-rmd/assets/apsr-leeper.bst
+---
+
+class: middle, center
+
+
+```{r setup-rmd, include = FALSE, cache = FALSE}
+source(here::here("code", "assets", "slide-helpers.R"))
+```
+
+```{r inf, include = FALSE, cache = FALSE, eval = FALSE}
+xaringan::inf_mr(here::here("slides", "08_git", "08_git-intro.Rmd"))
+# servr::daemon_stop(1)
+```
+
+
+.pull-left[
+# **PS 811: Statistical Computing**
+
+<br>
+Michael DeCrescenzo
+<br>
+University of Wisconsin–Madison
+
+]
+
+.pull-right[
+```{r title-graphic, include = TRUE, fig.width = 4, fig.height = 3, out.width = "100%"}
+tibble(
+  x = seq(0, 1, .01)
+) %>%
+  crossing(b = seq(1, 10, length.out = 5)) %>%
+  mutate(dbeta = dbeta(x, 3, b)) %>%
+  ggplot() +
+  aes(
+    x = x, 
+    y = dbeta, 
+    color = as.factor(b), 
+    fill = as.factor(b)
+  ) +
+  geom_line() +
+  geom_ribbon(
+    aes(ymin = 0, ymax = dbeta),
+    color = NA,
+    alpha = 0.2
+  ) +
+  viridis::scale_fill_viridis(discrete = TRUE, end = 0.9) +
+  viridis::scale_color_viridis(discrete = TRUE, end = 0.9) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+    panel.border = element_blank(),
+    panel.background = element_blank()
+  ) 
+```
+
+]
+
+## Version Control with Git
+
+April 3, 2020
+
+---
+
+# Before we begin...
+
+Canvas Announcement:
+
+
+- **Install Git**
+ 
+    - Mac: `xcode-select --install` in Terminal
+    
+    - Windows: download Git Bash app
+
+- **Install Sourcetree**
+
+    - A _graphical user interface_ (GUI) to GIt
+
+
+
+---
+
+# What is Git?
+
+A technology that records the development of your project's **source code**
+
+Changes to each file are **tracked**
+
+**History of changes** like a trail of breadcrumbs
+
+Retrace your steps, rewind progress, create "experimental" development paths, incorporate/manage collaborator contributions
+
+
+---
+
+# Why is Git?
+
+Everything in one place: **portable** and **reproducible**
+
+Trace the history of a project
+
+- Radical transparency. You can share the whole development arc of the project.
+- Helps you fix broken things, learn why results may have changed, etc.
+- Natural complement to "preregistration" of study designs
+
+Collaboration
+
+- Who did what? Track changes for code!
+- Enables division of labor, parallel development
+
+
+---
+
+# Why Git _for this class_?
+
+Benefits of Git are routine in other technologies (MS Word track changes, etc...). No exaggeration to say that these are essential functions of modern intellectual labor.
+
+--
+
+Mysteriously (or, infuriatingly), the people who control your lives in grad school don't teach you how to implement them for code-based work, which is _a ton of what we do_.
+
+--
+
+In the industry world: an extremely valuable real-world skill for "deploying" code-based products (websites, apps, statistical/ML models, database management...). Employers require it.
+
+--
+
+<center><h2>~*~That's why I'm here~*~</h2></center>
+
+
+
+---
+
+class: middle
+
+.pull-left[
+
+# Today: <br> Basics
+
+- Important concepts & terms
+
+- Simple actions: staging, committing, ignoring
+
+- Remote repositories
+
+- **Everything you need** for final project
+
+]
+
+--
+
+.pull-right[
+
+# Next Week: <br> Intermediate
+
+- Large files
+
+- Navigating git "history"
+
+- Branches: collaborating/task management
+
+- **Important skills** for real-world Git
+
+]
+
+
+
+---
+
+class: center, middle
+
+# Should I be scared?
+
+
+--
+
+## A little.
+
+--
+
+### Git is weird, but we will stick to the simple stuff at first
+
+
+---
+
+class: center, middle, inverse
+
+# Project Workflow
+
+
+---
+
+class: middle
+
+# So, I have a new project
+
+
+1. Create a directory ("folder") for the project
+
+2. Make it an Rstudio Project
+
+3. Initialize Git repository
+
+4. Periodically **commit** file changes (Saving files ≠ commiting)
+
+[more...](https://happygitwithr.com/big-picture.html#is-it-going-to-hurt)
+
+---
+
+class: center, middle, inverse
+
+# Step 1: Initialize Repository
+
+In Sourcetree: `New` > `Create Local Repository`
+
+
+
+
+---
+
+class: center, middle, inverse
+
+# Step 2: Assess your working directory
+
+
+---
+
+# Step 2: Assess your working directory
+
+
+The "File Status" screen in Sourcetree shows you the current state of your files.
+
+- When you first begin a project, every file is **untracked**. Files will not be tracked until you first add/commit them. 
+- Previously-committed files will show if they have been **modified** since previous commit
+- Ignored files won't show up at all (more later)
+
+
+
+---
+
+class: center, middle, inverse
+
+# Step 3: Add and Commit Files
+
+
+---
+
+# Step 3: Add and Commit Files
+
+A **"commit"** is a multi-file snapshot of your progress on a project.
+
+- Choose which files to commit and "stage" them (check box beside file)
+- Once files are staged, write "commit message" and **commit**
+- **Give it a try**
+
+
+--
+
+Commit tips:
+
+- Don't commit private stuff (passwords, confidential info...)
+- Commits should be internally coherent, task-oriented.
+- Don't group multiple tasks into one commit. 
+- You can stage _lines_ in a file without staging the whole file.
+- Write _informative_, verb-based commit messages (e.g. "simplify lit review").
+
+
+
+---
+
+class: middle
+class: center, middle
+
+```{r blank_commits, include = TRUE, fig.width = 4, fig.height = 2}
+tibble(x = 1:5, y = 1) %>%
+  ggplot() +
+  aes(x, y) +
+  geom_line() +
+  geom_point(aes(color = x == max(x)), size = 3) +
+  geom_text(aes(label = toupper(letters)[x]), vjust = 2) +
+  coord_cartesian(ylim = c(0, 3)) +
+  labs(
+    title = "Simple Git History",
+    x = latex2exp::TeX("Time $\\rightarrow$"),
+    y = NULL
+  ) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+  ) +
+  scale_color_manual(values = c("black", secondary))
+```
+
+The "History" view in Sourcetree shows your "git tree" (a.k.a. "graph")
+
+---
+
+class: center, middle
+
+![](https://happygitwithr.com/img/commit-diff-sha-tag.png)
+
+Commits only save **changes** to files. Commits ID'd by "hash"
+
+
+---
+
+class: center, middle
+
+![](https://gitbookdown.site/img/git_branch_merge.png)
+
+Next week: Git with many "branches"
+
+---
+
+# What (not) to commit
+
+The programmer's philosophy: commit the source code, not the output.
+
+--
+
+Data science is a little different:
+
+- Obviously we commit the source code (otherwise, no output)
+- Rmd makes _intermediate_ files that aren't important.
+- Rmd final output? I commit.
+- Statistical output? Sometimes helpful to diagnose why something changed/doesn't work anymore
+- One possibility: use `sink()` to save R output & commit log file
+
+--
+
+Separate issue: big files
+
+
+
+---
+
+# Ignoring files
+
+"I will never want to commit this file"
+
+Ignoring files alters your `.gitignore` file, which you should commit/track.
+
+You can ignore entire subfolders.
+
+You can ignore certain file **patterns** (e.g. any `*.bbl` file, any folder that ends with `*_cache`)
+
+
+---
+
+#  Review/taking stock
+
+.pull-left[
+Project folder :: git repository
+
+- source code
+- data (we'll come back to this)
+- notes/documentation
+- graphics
+- output
+- intermediary files
+
+]
+
+.pull-right[
+Git commands
+
+- `git init`: create git repository
+- `git status`: what's the state of my working directory?
+- `git add ...`: stage files for commit
+- `git commit ...`: commit file changes
+- No `git ignore` command. Just add info to `.gitignore`
+
+]
+
+
+---
+
+# Other quick tips
+
+.pull-left[
+Put `README.md` file(s) in your repository! 
+
+- basic description of project and folder contents
+- also helpful to explain contents of sub-folders (e.g. explaining how your script files relate to one another...)
+]
+
+.pull-right[
+Computing environment:
+
+- Save and commit the output from `devtools::session_info()`: info about your OS, R version, package versions...
+- Use [`{renv}`](https://rstudio.github.io/renv/articles/renv.html) to manage package versions at the project level
+]
+
+
+
+---
+
+class: middle, center, inverse
+
+# Step 4: Push to remote
+
+
+---
+
+# Step 4: Push to remote
+
+Create a "remote repository" to share/back up your project
+
+- On Github: New repository
+    - Name repository (e.g. `polisci-811`), description optional
+    - Set to public (upgrade to Github "student premium" for free private repo)
+    - "Create Repository"
+    - Copy repo URL: `https://github.com/username/repo-name.git`  
+
+- In Sourcetree: Repository > Add Remote...
+    - Remote name: `origin`
+    - Paste URL, click OK
+
+---
+
+# Step 4: Push to remote
+
+If we have done at least one commit, we can "push" the git repo to remote
+
+In Sourcetree:
+
+- On the Toolbar: click "Push" 
+- Select "master". Pushing our local "master" branch to remote
+- May need to authenticate Github username credentials
+
+Copy of your repository is now on Github
+
+
+
+---
+
+# Why Remote?
+
+If your computer dies in a fire, your project is safe
+
+If you break your local repository, you can pull an unbroken copy
+
+If you're collaborating with people, combine changes online
+
+Share replication archive _as an entire project_
+
+
+---
+
+# Getting Help
+
+Check out the [example project](https://github.com/mikedecr/example-project) from earlier in the semester or my [other repositories](https://github.com/mikedecr?tab=repositories)
+
+Check the syllabus for resources.
+
+Google before you try something new! Git is weird and you WILL mess things up. 
+
+Again, you WILL mess things up. That's OK. Sometimes you need to throw away the `/.git/` folder and start it again...
+
+
+
+

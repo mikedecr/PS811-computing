@@ -1,0 +1,71 @@
+
+- Basic idea
+- Why?
+    - Everything in one place / folder / "repository"
+        - portability
+        - replication
+        - never share a project that can't run
+    - History of the project
+        - transparency
+        - restore broken code to some older (working) state
+        - track what you/others did
+        - "why did the results change?"
+    - collaboration
+        - "track changes" for many team members
+        - combine parallel development branches
+- Lay of the land:
+    - project folder == "repository"
+    - source code
+    - documentation
+    - output
+    - intermediary files
+- Local terminology:
+    - init
+    - working directory
+    - add/staging (the INDEX)
+    - commit
+- Git only saves data about _changes_
+    - keeps it lightweight
+    - remembers everything that happened in order
+    - sometimes mistakes get preserved
+- What (not) to commit
+    - ignoring
+    - debate: <https://twitter.com/JennyBryan/status/1114924383946960896>
+    - log file
+    - <https://dvc.org/>
+- Remotes
+    - local repository
+    - remote repository
+    - online backup
+    - "production code" v "development code"
+- Remote terminology
+    - Github account
+    - Github pro
+    - after commit: git push
+    - git pull
+- Tips
+    - informative, verbs
+    - don't commit big files (we'll talk about this soon)
+    - push often
+- When things go wrong
+    - Always research before trying something new
+    - go slowly
+    - stash changes
+    - google is your friend
+    - oh shit git
+    - re-download from remote!
+    - nuclear option
+- Things for me to learn
+    - revert vs reset <https://dev.to/neshaz/when-to-use-git-reset-git-revert--git-checkout-18je>, <https://gist.github.com/tnguyen14/0827ae6eefdff39e452b>
+    - checkout (in same branch?)
+    - branch vs node vs HEAD vs index vs working directory...
+    - merge vs rebase
+
+
+
+Next week:
+
+- Terminology
+    - HEAD: which commit we're "pointing" to
+
+
