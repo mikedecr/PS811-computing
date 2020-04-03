@@ -52,13 +52,15 @@ What they don't teach you (pt 1): real data, workflow
 - March 20: **BREAK**
 - March 27: TeX math, smart Rmd (opts_chunk, inline, english)
 - April 3: Git and Github
+    - <http://www.win-vector.com/blog/2020/03/version-control-is-a-time-machine-that-translates-common-hindsight-into-valuable-foresight/>
 
 What they don't teach you (pt 2): marketable skills
 
 - April 10: Intermediate git (branches, flow, large data)
+    - data: LFS, submodules
 - April 17: functional programming (apply, anonymous functions, purrr)
-- April 24: simulations (null distributions, bootstrapping, cross-validation)
-- May 1: causal inference
+- April 24: causal inference (parametric)
+- May 1: industry tools, predictive modeling (null distributions, bootstrapping, cross-validation) causal inference
 
 
 <!-- other?
