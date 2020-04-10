@@ -1,0 +1,494 @@
+---
+title: "Intermediate Git"
+subtitle: ""
+author: ""
+date: ""
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    selfcontained: true
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    # mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_SVG"
+    # css: "kunoichi"
+    css: xaringan-themer.css
+    seal: false
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "https://platform.twitter.com/widgets.js"
+# bibliography: ../../paper-rmd/assets/voter-id-bib.bib
+# biblio-style: ../../paper-rmd/assets/apsr-leeper.bst
+---
+
+class: middle, center
+
+
+```{r setup-rmd, include = FALSE, cache = FALSE}
+source(here::here("code", "assets", "slide-helpers.R"))
+```
+
+```{r inf, include = FALSE, cache = FALSE, eval = FALSE}
+xaringan::inf_mr(here::here("slides", "09_more-git", "09_more-git.Rmd"))
+# servr::daemon_stop(1)
+```
+
+
+.pull-left[
+# **PS 811: Statistical Computing**
+
+<br>
+Michael DeCrescenzo
+<br>
+University of Wisconsin–Madison
+
+]
+
+.pull-right[
+```{r title-graphic, include = TRUE, fig.width = 4, fig.height = 3, out.width = "100%"}
+tibble(
+  x = seq(0, 1, .01)
+) %>%
+  crossing(b = seq(1, 10, length.out = 5)) %>%
+  mutate(dbeta = dbeta(x, 3, b)) %>%
+  ggplot() +
+  aes(
+    x = x, 
+    y = dbeta, 
+    color = as.factor(b), 
+    fill = as.factor(b)
+  ) +
+  geom_line() +
+  geom_ribbon(
+    aes(ymin = 0, ymax = dbeta),
+    color = NA,
+    alpha = 0.2
+  ) +
+  viridis::scale_fill_viridis(discrete = TRUE, end = 0.9) +
+  viridis::scale_color_viridis(discrete = TRUE, end = 0.9) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+    panel.border = element_blank(),
+    panel.background = element_blank()
+  ) 
+```
+
+]
+
+## Intermediate Git: Branches, History, etc.
+
+April 10, 2020
+
+---
+
+class: middle
+
+.pull-left[
+## Last Week
+
+- Git basics
+
+- Initializing, adding/staging, committing
+
+- Local vs. remote repository
+
+- Push to Github
+
+]
+
+--
+
+.pull-right[
+
+## This Week
+
+- Review / Pushing to Github
+
+- Datasets (Git LFS)
+
+- Branches & Git "Flow"
+
+- Time traveling in your Git history
+
+]
+
+---
+
+# Review: so I have a new project
+
+1. Create a directory ("folder") on your computer
+
+1. Make it an **RStudio project**
+
+1. Initialize the Git repository
+
+1. Commit changes to source code
+
+--
+
+1. Review: create **remote repository** (on Github)
+
+1. Connect to remote repo, push
+
+
+---
+
+# Setting up remote repository
+
+.pull-left[
+
+- On Github, **New Repository**
+
+- In **Terminal** or **Git Bash**, navigate to project 
+
+    - `cd path/to/project`
+    - Other helpful commands:
+        - type `pwd` to "print working directory"
+        - `ls` to list folder contents
+]
+
+--
+
+.pull-right[
+
+- Paste commands from Github
+
+    - `git remote add ...`
+    - `git push ...`
+
+- All future pushes will work **from Sourcetree**
+
+]
+
+
+---
+
+class: center, middle, inverse
+
+# What to do about data?
+
+
+---
+
+# Can I commit data? (& other large files)
+
+.pull-left[
+
+Local repo (Git): no problem (in theory)
+
+Remote repo (Github etc.): potential problem
+
+- Rule of thumb: keep repo under 1 GB, no file more than 100MB
+- If data are petite...no worries
+- Learn more [here](https://help.github.com/en/github/managing-large-files/what-is-my-disk-quota) or [here](https://towardsdatascience.com/uploading-large-files-to-github-dbef518fa1a)
+
+]
+
+--
+
+.pull-right[
+What if my dataset is large?
+
+- Use Git LFS ([download](https://git-lfs.github.com/))
+- Or ignore data (`.gitignore`) & back it up somewhere else (Box/Dropbox, Amazon S3)
+
+
+What if I already committed a big file?
+
+- Can I undo? More later.
+- Remove file from repo history ([tutorial](https://help.github.com/en/github/managing-large-files/removing-files-from-a-repositorys-history))
+
+]
+
+
+
+---
+
+class: center, middle, inverse
+
+# And now, more stuff that you should know about Git
+
+## (NOT required for the final)
+
+## (but important for getting the most out of Git)
+
+
+---
+
+class: center, middle, inverse
+
+# Branches
+
+---
+
+class: center
+
+### Branches for new features / **merging** into `master` branch
+
+![](https://miro.medium.com/max/800/1*RTgn1s0GY8r0rSPsAzf8NQ.png)
+
+---
+
+
+
+# Creating new branches
+
+Is easy in Sourcetree. Click the "Branch" button.
+
+Move between branches using `checkout`.
+
+You can commit to a new branch as before, but changes only apply to that branch.
+
+Why would I want to do this? Well...
+
+
+---
+
+## Git "Flow": branch-based project development
+
+.left-code[
+
+**Common in industry!** More [here](https://nvie.com/posts/a-successful-git-branching-model/) and [here](https://leanpub.com/git-flow/read)
+
+- New features are developed on `feature` branches
+
+- `feature` branches return to a `development` branch for reconciliation/testing
+
+- `development` branch returns to `master` branch for "public release"
+)
+
+]
+
+.right-plot[
+![](https://leanpub.com/site_images/git-flow/git-workflow-release-cycle-2feature.png)
+]
+
+---
+
+# Branchy things to remember: local changes
+
+.pull-left[
+
+I'm working on branch `A` and I want to move to (checkout) branch `B`.
+
+- If I have committed my changes on `A`, this is seamless. 
+- If I have uncommitted changes on `A`, I could lose them!
+
+]
+
+--
+
+.pull-right[
+
+What can I do about uncommitted local changes?
+
+- I can `stash` changes on `A` (store changes without committing)
+- Then `apply` stash on `B` (or anywhere else): apply changes to "working tree"
+- `pop` stash will apply changes _and then delete the stash_ (riskier)
+
+]
+
+
+---
+
+# Branchy things to remember: merge conflicts
+
+.pull-left[
+I want to merge branch `B` into `A`.
+
+- If changes in `B` don't conflict with changes in `A`, this is seamless.
+
+- If changes can't be reconciled: (spooky voice) _**merge conflict**_
+]
+
+--
+
+.pull-right[
+
+Resolving merge conflicts:
+
+- Git alters your file to show you the conflicts
+
+- The user (you) reconciles conflicts manually
+
+- Scary at first but not so bad
+
+]
+
+
+---
+
+## Branchy things to remember: merging vs. rebasing
+
+
+.left-code[
+- **Merging** incorporates feature branch changes with master branch. Feature branch stays intact.
+- **Rebasing** pastes feature branch to the end of the master branch
+- Merging often easier (but depends on circumstances). More [here](https://medium.com/datadriveninvestor/git-rebase-vs-merge-cc5199edd77c)
+]
+
+.right-plot[
+![](https://miro.medium.com/max/1400/1*pzT4KMiZDOFsMOKH-cJjfQ.png)
+]
+
+
+
+---
+
+
+class: center, middle, inverse
+
+# Time Traveling in your Git History
+
+---
+
+# Trail of breadcrumbs
+
+.pull-left[
+Git leaves a trail of commits.
+
+Commits can be on one branch, several branches, whatever.
+]
+
+--
+
+.pull-right[
+
+If I switch between branches, I change what I'm seeing in my files.
+
+If I want to go "back in time," I would see what the project looked like at that time.
+]
+
+
+---
+
+# Terminology: the HEAD
+
+HEAD is you. Where are you right now?
+
+The state of the project "as it appears in your files" depends on where the HEAD is "pointing"
+
+If I change branches ("checkout a branch") the HEAD is pointing to the new branch. 
+
+If I investigate a project as it existed in a previous commit, the HEAD is pointing to that previous commit.
+
+
+---
+
+# Checkout
+
+Checkout moves the HEAD. (read more [here](https://www.atlassian.com/git/tutorials/using-branches/git-checkout))
+
+I switch branches by checking out a branch.
+
+I can rewind to a previous commit by checking out a commit.
+
+Checking out _does not change your history_. It only changes where you "are" / what you "see" in your files. 
+
+However, you can lose uncommitted changes if you checkout a branch/commit without _stashing_.
+
+
+---
+
+class: center, middle
+
+## Two ways to undo commits: Reverting and Resetting
+
+---
+
+
+## Undoing by **Reverting**
+
+- Creates a new commit that inverts a previous commit.
+
+- Previous commit _remains in history_
+
+![](https://inbo.github.io/tutorials/tutorials/git_undo_commit/undo_commits_images/03.svg)
+
+.center[Reverting is a **forward-moving undo**]
+
+
+---
+
+.left-code[
+## Undo by **Resetting**
+
+- "Rewind" a repository, discard a commit entirely
+
+- What happens to rewound changes? Depends...
+    - `soft`: changes remain in files & are staged
+    - `mixed`: changes remain in files, not staged
+    - `hard`: changes are discarded from files
+]
+
+.right-plot[
+```{r, include = TRUE, echo = FALSE}
+knitr::include_graphics("https://gcapes.github.io/git-course/fig/git-revert-vs-reset.svg")
+```
+
+.center[Resetting is **backward-moving undo**]
+
+]
+
+---
+
+# Undo tips
+
+When to do which ([link](https://dev.to/neshaz/when-to-use-git-reset-git-revert--git-checkout-18je)): 
+
+- Usually safer to `revert` (doesn't throw anything away).
+- Best not to `reset` if commits are already pushed to remote.
+
+Link: [Undoing changes](https://gcapes.github.io/git-course/07-undoing/)
+
+Link: [How to undo almost anything](https://github.blog/2015-06-08-how-to-undo-almost-anything-with-git/)
+
+Link: [Oh Shit, Git!?!](https://ohshitgit.com/)
+
+---
+
+## Other terms
+
+It's possible to "amend" a commit (e.g. a message, adding a file, etc.)
+
+It's possible to "squash" multiple commits into one
+
+Some of these tricks are possible _on the command line_ but not in Sourcetree (or other apps)
+
+
+---
+
+# Danger zone
+
+What can you do to protect yourself before doing risky things with Git?
+
+1. Create a **_local copy_** of your project to test out the maneuver
+
+2. Push to remote **_before_** you start the maneuver. If local copy is ruined, `git clone` the remote so your local copy is your "most recent functioning version"
+
+3. Nuclear option: delete the `.git` folder from your project entirely. Your files will be there, but the Git history will be GONE.
+
+
+---
+
+# Looking forward
+
+Final project should be pushed to remote when it is done
+
+- This only requires committing and pushing
+- Fancy stuff (branches, reverting, resetting, etc.) NOT REQUIRED
+
+Meet with me if you're feeling lost
+
+
+
+
+
+
+
+
+

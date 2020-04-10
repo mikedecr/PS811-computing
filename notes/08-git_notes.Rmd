@@ -65,7 +65,48 @@
 
 Next week:
 
+- Add GitHub to SourceTree (use HTTPS?)
+- Make a project
+    - init
+    - add
+    - commit
+- Local and remote
+    - define
+    - Create GH repo
+    - push
+    - if no work, push from the command line
+        - terminal
+        - cd
+        - git status
+- Data
+    - explain the problem
+        - small data? Commit
+        - large data? LFS
+    - Doing LFS
+        - Install LFS
+        - use sourcetree to add things to LFS
+        - add .gitattributes
+        - add file as normal, push
+        - Github says file is tracked with LFS
+    - Or, you could store data somewhere else and import w/ code
+- Branches
+    - good for testing out experimental features and then merging back in
+    - if you hit a conflict, how to read it
+    - sometimes you want to jump to a branch without committing: STASH your changes, and then "apply" or "pop" the stash later.
+- Dealing with risks:
+    - Copy the repo, test what you're doing on the copy
+    - push BEFORE you do something risky, so the remote version works the way you want. 
+- History Hacking
+- Reset
 - Terminology
     - HEAD: which commit we're "pointing" to
+- what to do about data:
+    - if your data are smallish, you can commit.
+    - git LFS (pointer to data, not the data itself)
+        - size limitations
+    - save data somewhere else
+        - read in using some different script
+        - I use Box sometimes
+        - other people use Amazon s3
 
 
