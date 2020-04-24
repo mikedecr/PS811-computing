@@ -8,6 +8,7 @@ library("here")
 library("tidyverse")
 library("broom")
 library("prediction") # install.packages("prediction")
+library("rdrobust") # install.packages("rdrobust")
 
 # ---- data -----------------------
 
@@ -42,6 +43,13 @@ rd <- lm(
 
 # coefficients
 tidy(rd)
+
+# model results trick
+tidy_rd_list <- rd %>%
+  tidy(conf.int = TRUE) %>%
+  split(.$term) %>%
+  print()
+
 
 # there is also an {rdrobust} package
 #   for optimal bandwidth RD estimation
@@ -82,19 +90,54 @@ ggplot(rd_predictions) +
   )
 
 
+
 # ---- bootstrap the model -----------------------
 
+# we might do bootstrapping when our model is nonparametric
+#   so analytical confidence intervals are harder to calculate.
+# Example: nonparametric RD using "triangular" weight kernel
+
+tri_rd <- 
+  rdrobust::rdrobust(
+    y = rd_data$general_vote,
+    x = rd_data$extremist_margin,
+    c = 0,
+    h = 0.2,
+    kernel = "triangular"
+  )
+
+tri_rd
+
+attributes(tri_rd)
+
+tri_rd$coef
+
+
+
+# --- demonstration of "resampling the data" --- 
+
+# original data:
 rd_data
 
-# demonstration of "resampling the data"
 # sample N rows from the data with replacement
 sample_n(rd_data, size = nrow(rd_data), replace = TRUE)
 
-# make a nested data frame for 1000 bootstrapped samples
+
+
+
+
+# --- implement many times ---
+
+# A few ways to do this. 
+# Many people might do a loop over some large number of iterations.
+# We learned last week that loops in R are slow and hard to code.
+
+# Using purrr:
+# Make a nested data frame for 1000 bootstrapped samples.
 # boot_data: resampled data
 data_samples <- 
   tibble(
-    boot = 1:1000,
+    boot = 1:2000,
     data = list(rd_data)
   ) %>%
   mutate(
@@ -106,41 +149,53 @@ data_samples <-
   print()
 
 # boot_model: model estimated from resampled data
-# boot_tidy: model coefficients from resampled data
+# boot_effect: model coefficients from every model
 boot_models <- data_samples %>%
   mutate(
     boot_model = map(
       .x = boot_data,
-      .f = ~ lm(general_vote ~ 1 + extremist_margin + 
-                  extremist_win + extremist_win*extremist_margin, 
-                data = .x)
+      .f = ~ {
+        rdrobust::rdrobust(
+          y = .x$general_vote, 
+          x = .x$extremist_margin, 
+          c = 0, 
+          h = 0.2, 
+          kernel = "triangular"
+        )
+      }
     ),
-    boot_tidy = map(boot_model, tidy),
-    boot_augment = map(boot_model, augment)
+    boot_effect = map_dbl(
+      .x = boot_model, 
+      .f = ~ .x$coef["Robust", ]
+    )
   ) %>%
   print()
 
 
-# plot the original data,
-# plus the resampled lines
+# plot the bootstrap coefficients as histogram
+# plus the original CI (added as ad-hoc point and line segment)
 boot_models %>%
-  select(boot, boot_augment) %>%
-  unnest(cols = boot_augment) %>%
   ggplot() +
-  aes(x = extremist_margin, y = .fitted) +
-  geom_line(
-    aes(group = paste(boot, extremist_win)), 
-    alpha = 0.5, color = "gray40"
+  aes(x = boot_effect) +
+  geom_histogram() +
+  annotate(
+    geom = "point", 
+    x = tidy_rd_list$extremist_win$estimate, 
+    y = -5
   ) +
-  geom_ribbon(
-    data = rd_predictions,
-    aes(y = fitted.fit, ymin = fitted.lwr, ymax = fitted.upr),
-    color = NA, fill = "tomato",
-    alpha = 0.5
+  annotate(
+    geom = "segment",
+    x = tidy_rd_list$extremist_win$conf.low, 
+    xend = tidy_rd_list$extremist_win$conf.high, 
+    y = -5, 
+    yend = -5
   ) +
-  geom_point(data = rd_data, aes(y = general_vote), size = 0.5) +
-  theme_minimal() +
-  coord_cartesian(ylim = c(0.35, 0.8))
+  labs(
+    title = "Parametric vs. Nonparametric RD",
+    subtitle = "Histogram of Bootstrapped Coefficients\nfrom Triangular Kernel RD",
+    x = "Local Treatment Effect of Extremism\nat the Cutoff",
+    y = "Count"
+  )
 
 
 # there are also packages for bootstrapping
