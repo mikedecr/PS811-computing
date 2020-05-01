@@ -1,0 +1,23 @@
+
+
+- Functional form issues for causal modeling
+    - Assuming that I've controlled for everything!
+    - Nothing to guarantee that confounding effects are linear
+    - Let predictive modeling tools automate covariate selection, functional forms, interactions
+- Bigger problem: regression coefficients aren't treatment effects
+    - ATE, ATT
+    - Aronow and Samii: coefficients are variance-weighted TEs.
+    - The "effective sample" may not be your sample.
+    - The "effective sample" may not resemble the population.
+    - The only way that you have correspondence is if the treatment propensity is the SAME for all units.
+    - There is no "general external validity basis" for preferring observational studies with regression vs. more careful causal inference methods.
+    - Use ML to make predictions for Y, and the p(T).
+- "What about the interpretation of the coefficients"
+    - fuck that
+    - the control coefficients are not interpretable as causal effects
+    - They don't mean what you think they mean.
+    - They are included ONLY to absorb confounding.
+- Computing
+    - covariate selection (LASSO?)
+    - GAMS
+    - cross-validation
