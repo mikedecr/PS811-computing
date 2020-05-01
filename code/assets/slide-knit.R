@@ -9,6 +9,7 @@ knitr::opts_chunk$set(
   # cache.path = here::here("slides", "facebook", "facebook_cache/"),
   # fig.path = here::here("slides", "MPMC-2019", "MPMC_figs/"),
   dpi = 100, fig.retina = 3, 
+  plot.device = "cairo_png",
   fig.width = 6, fig.height = 4, out.width = "80%",
   fig.align = "center"
 )
@@ -21,7 +22,7 @@ library("xaringanthemer")
 # primary <- "#cb4b16"
 # secondary <- "#268bd2"
 
-mono_light(
+style_mono_light(
   base_color = primary,
   # header_font_google = google_font("Roboto"),
   header_font_google = google_font("Source Sans Pro"),
