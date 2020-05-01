@@ -1,0 +1,56 @@
+---
+title: |
+  | **Final Project** 
+  | The Final Part
+author: "PS 811: Statistical Computing"
+date: "Due May 7, 2020"
+# fonts:
+#   - package: MinionPro
+#     options: lf, mathtabular, minionint
+#   - package: FiraSans
+#     options: scaled = 0.9
+#   - package: zi4
+#     options: varqu, scaled = 0.95
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    toc: false
+    number_sections: false
+    # highlight: kate
+geometry: margin=1.15in
+# compact-title: false
+fontsize: 12pt
+subparagraph: yes
+citecolor: black
+urlcolor: blue
+linkcolor: magenta
+header-includes:
+  \usepackage[lf, mathtabular, minionint]{MinionPro} 
+  \usepackage[scaled = 0.9]{FiraSans} 
+  \usepackage[varqu, scaled = 0.95]{zi4}
+  \usepackage[small, bf]{titlesec} 
+---
+
+Complete a project folder/repository for an assignment for another course or some other project of your choosing. This project should...
+
+- Be self contained on your computer (all lives in one file)
+- Follow a project-oriented workflow: separate folders for code, data, ...
+- Contain a written document produced with R Markdown, compiled to PDF.
+- Be tracked using Git.
+- Have its git history published online using Github or a similar remote repository service. This is how you will submit the project to me (linking me to your remote repository for me to download and investigate). 
+
+Create the project that **works for you and your needs in school.** I don't want you to spend time creating a project that isn't valuable for your other classes and/or research projects. For example, if your project is more of a literature review or a qualitative paper, _that is fine._ Nearly all of the important project-based skills, writing technology using R Markdown, etc., are transferable to qualitative or argumentative work that does not require analysis code. 
+
+Some other details that you may find helpful.
+
+- Your project folder should contain an `.Rproj` file.
+- Your project should contain a `README.md` file in the project root that describes the project with an extremely short blurb. This is the description of the project that you see when you visit your Github page.
+- Use robust file pathways in any analysis scripts that require data files on your computer (using the `here` package).
+- Graphics and tables are best created _within the Rmd file that you are writing_.
+- You may find it valuable to create a _modular_ R pipeline: separate R files that produce results that you can later import into R Markdown.
+- If you have bibliographic citations, use R Markdown's bibliography capabilities.^[
+  Microsoft users have been having difficulty with bibliographies if they also installed `tinytex` to build \LaTeX\ output. If this sounds like you, I recommend (1) uninstalling `tinytex`, (2) installing \TeX Live, and (3) reinstalling the `rmarkdown` package for R, in that order.
+]
+
